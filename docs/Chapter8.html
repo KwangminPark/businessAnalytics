@@ -1,0 +1,2019 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.531">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>비즈니스 애널리틱스 (Business Analytics) - 8&nbsp; 차원축소와 주성분 분석</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./Chapter9.html" rel="next">
+<link href="./Chapter7.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./Chapter8.html"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">차원축소와 주성분 분석</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">비즈니스 애널리틱스 (Business Analytics)</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Chapter1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">오리엔테이션</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Chapter2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">통계학의 본질과 변수의 이해</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Chapter3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">기술통계와 요약</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Chapter4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">일원배치 분산분석</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Chapter5.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">이원배치 분산분석</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Chapter6.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">회귀분석: 통계의 꽃</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Chapter7.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">조절효과와 매개효과</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Chapter8.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">차원축소와 주성분 분석</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Chapter9.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">요인분석</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Chapter10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">계층적 군집분석</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Chapter11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">k-평균 군집분석</span></span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#차원축소란-무엇인가" id="toc-차원축소란-무엇인가" class="nav-link active" data-scroll-target="#차원축소란-무엇인가"><span class="header-section-number">8.0.1</span> 차원축소란 무엇인가?</a></li>
+  <li><a href="#외식-데이터의-차원이란-무엇인가" id="toc-외식-데이터의-차원이란-무엇인가" class="nav-link" data-scroll-target="#외식-데이터의-차원이란-무엇인가"><span class="header-section-number">8.0.2</span> 외식 데이터의 차원이란 무엇인가?</a></li>
+  <li><a href="#너무-많은-변수-왜-문제인가" id="toc-너무-많은-변수-왜-문제인가" class="nav-link" data-scroll-target="#너무-많은-변수-왜-문제인가"><span class="header-section-number">8.0.3</span> 너무 많은 변수, 왜 문제인가?</a></li>
+  <li><a href="#차원을-줄이면-무엇이-좋아지나" id="toc-차원을-줄이면-무엇이-좋아지나" class="nav-link" data-scroll-target="#차원을-줄이면-무엇이-좋아지나"><span class="header-section-number">8.0.4</span> 차원을 줄이면 무엇이 좋아지나?</a></li>
+  <li><a href="#실습-예제-30개-매장-20개-만족도-항목" id="toc-실습-예제-30개-매장-20개-만족도-항목" class="nav-link" data-scroll-target="#실습-예제-30개-매장-20개-만족도-항목"><span class="header-section-number">8.0.5</span> 실습 예제: 30개 매장, 20개 만족도 항목</a></li>
+  <li><a href="#실제-외식-경영-현장에서의-차원축소-활용" id="toc-실제-외식-경영-현장에서의-차원축소-활용" class="nav-link" data-scroll-target="#실제-외식-경영-현장에서의-차원축소-활용"><span class="header-section-number">8.0.6</span> 실제 외식 경영 현장에서의 차원축소 활용</a></li>
+  <li><a href="#다음으로-넘어가기-전-확인할-질문" id="toc-다음으로-넘어가기-전-확인할-질문" class="nav-link" data-scroll-target="#다음으로-넘어가기-전-확인할-질문"><span class="header-section-number">8.0.7</span> 다음으로 넘어가기 전 확인할 질문</a></li>
+  <li><a href="#주성분분석과-요인분석의-차이" id="toc-주성분분석과-요인분석의-차이" class="nav-link" data-scroll-target="#주성분분석과-요인분석의-차이"><span class="header-section-number">8.0.8</span> 주성분분석과 요인분석의 차이</a></li>
+  <li><a href="#분석-목적의-차이-축소-vs-탐색" id="toc-분석-목적의-차이-축소-vs-탐색" class="nav-link" data-scroll-target="#분석-목적의-차이-축소-vs-탐색"><span class="header-section-number">8.0.9</span> 분석 목적의 차이: 축소 vs 탐색</a></li>
+  <li><a href="#외식산업에서의-예시-비교" id="toc-외식산업에서의-예시-비교" class="nav-link" data-scroll-target="#외식산업에서의-예시-비교"><span class="header-section-number">8.0.10</span> 외식산업에서의 예시 비교</a></li>
+  <li><a href="#분석-결과가-다르게-나오는-이유" id="toc-분석-결과가-다르게-나오는-이유" class="nav-link" data-scroll-target="#분석-결과가-다르게-나오는-이유"><span class="header-section-number">8.0.11</span> 분석 결과가 다르게 나오는 이유</a></li>
+  <li><a href="#r-실습-동일한-데이터로-pca-vs-fa-비교" id="toc-r-실습-동일한-데이터로-pca-vs-fa-비교" class="nav-link" data-scroll-target="#r-실습-동일한-데이터로-pca-vs-fa-비교"><span class="header-section-number">8.0.12</span> R 실습: 동일한 데이터로 PCA vs FA 비교</a></li>
+  <li><a href="#실무-판단-기준-어떤-분석을-선택할-것인가" id="toc-실무-판단-기준-어떤-분석을-선택할-것인가" class="nav-link" data-scroll-target="#실무-판단-기준-어떤-분석을-선택할-것인가"><span class="header-section-number">8.0.13</span> 실무 판단 기준: 어떤 분석을 선택할 것인가</a></li>
+  <li><a href="#공분산과-상관관계의-이해" id="toc-공분산과-상관관계의-이해" class="nav-link" data-scroll-target="#공분산과-상관관계의-이해"><span class="header-section-number">8.1</span> 공분산과 상관관계의 이해</a>
+  <ul class="collapse">
+  <li><a href="#분산과-공분산의-개념" id="toc-분산과-공분산의-개념" class="nav-link" data-scroll-target="#분산과-공분산의-개념"><span class="header-section-number">8.1.1</span> 분산과 공분산의 개념</a></li>
+  <li><a href="#공분산-행렬이란-무엇인가" id="toc-공분산-행렬이란-무엇인가" class="nav-link" data-scroll-target="#공분산-행렬이란-무엇인가"><span class="header-section-number">8.1.2</span> 공분산 행렬이란 무엇인가</a></li>
+  <li><a href="#상관관계는-왜-필요한가" id="toc-상관관계는-왜-필요한가" class="nav-link" data-scroll-target="#상관관계는-왜-필요한가"><span class="header-section-number">8.1.3</span> 상관관계는 왜 필요한가</a></li>
+  <li><a href="#외식산업-실무-예제-고객만족도-항목의-상관구조" id="toc-외식산업-실무-예제-고객만족도-항목의-상관구조" class="nav-link" data-scroll-target="#외식산업-실무-예제-고객만족도-항목의-상관구조"><span class="header-section-number">8.1.4</span> 외식산업 실무 예제: 고객만족도 항목의 상관구조</a></li>
+  <li><a href="#상관관계-해석의-함정" id="toc-상관관계-해석의-함정" class="nav-link" data-scroll-target="#상관관계-해석의-함정"><span class="header-section-number">8.1.5</span> 상관관계 해석의 함정</a></li>
+  <li><a href="#왜-pca-전에-상관행렬을-확인해야-하는가" id="toc-왜-pca-전에-상관행렬을-확인해야-하는가" class="nav-link" data-scroll-target="#왜-pca-전에-상관행렬을-확인해야-하는가"><span class="header-section-number">8.1.6</span> 왜 PCA 전에 상관행렬을 확인해야 하는가</a></li>
+  </ul></li>
+  <li><a href="#pca의-수학적-원리" id="toc-pca의-수학적-원리" class="nav-link" data-scroll-target="#pca의-수학적-원리"><span class="header-section-number">8.2</span> PCA의 수학적 원리</a>
+  <ul class="collapse">
+  <li><a href="#왜-고유값과-고유벡터가-중요한가" id="toc-왜-고유값과-고유벡터가-중요한가" class="nav-link" data-scroll-target="#왜-고유값과-고유벡터가-중요한가"><span class="header-section-number">8.2.1</span> 왜 고유값과 고유벡터가 중요한가</a></li>
+  <li><a href="#외식-데이터-예제-12개-문항-300명-응답" id="toc-외식-데이터-예제-12개-문항-300명-응답" class="nav-link" data-scroll-target="#외식-데이터-예제-12개-문항-300명-응답"><span class="header-section-number">8.2.2</span> 외식 데이터 예제: 12개 문항, 300명 응답</a></li>
+  <li><a href="#pca-실행-및-결과-해석" id="toc-pca-실행-및-결과-해석" class="nav-link" data-scroll-target="#pca-실행-및-결과-해석"><span class="header-section-number">8.2.3</span> PCA 실행 및 결과 해석</a></li>
+  <li><a href="#외식산업에서-고유값-기반-해석이-중요한-이유" id="toc-외식산업에서-고유값-기반-해석이-중요한-이유" class="nav-link" data-scroll-target="#외식산업에서-고유값-기반-해석이-중요한-이유"><span class="header-section-number">8.2.4</span> 외식산업에서 고유값 기반 해석이 중요한 이유</a></li>
+  </ul></li>
+  <li><a href="#pca-실행-절차와-분산-설명력" id="toc-pca-실행-절차와-분산-설명력" class="nav-link" data-scroll-target="#pca-실행-절차와-분산-설명력"><span class="header-section-number">8.3</span> PCA 실행 절차와 분산 설명력</a>
+  <ul class="collapse">
+  <li><a href="#pca의-실행-절차-요약" id="toc-pca의-실행-절차-요약" class="nav-link" data-scroll-target="#pca의-실행-절차-요약"><span class="header-section-number">8.3.1</span> PCA의 실행 절차 요약</a></li>
+  <li><a href="#외식-데이터-예제-고객만족도-설문-분석" id="toc-외식-데이터-예제-고객만족도-설문-분석" class="nav-link" data-scroll-target="#외식-데이터-예제-고객만족도-설문-분석"><span class="header-section-number">8.3.2</span> 외식 데이터 예제: 고객만족도 설문 분석</a></li>
+  <li><a href="#분산-설명력을-시각화하기-barplot" id="toc-분산-설명력을-시각화하기-barplot" class="nav-link" data-scroll-target="#분산-설명력을-시각화하기-barplot"><span class="header-section-number">8.3.3</span> 분산 설명력을 시각화하기: Barplot</a></li>
+  <li><a href="#왜-고유값이-중요한가" id="toc-왜-고유값이-중요한가" class="nav-link" data-scroll-target="#왜-고유값이-중요한가"><span class="header-section-number">8.3.4</span> 왜 고유값이 중요한가?</a></li>
+  <li><a href="#실무에서-분산-설명력-해석의-의미" id="toc-실무에서-분산-설명력-해석의-의미" class="nav-link" data-scroll-target="#실무에서-분산-설명력-해석의-의미"><span class="header-section-number">8.3.5</span> 실무에서 분산 설명력 해석의 의미</a></li>
+  </ul></li>
+  <li><a href="#주성분과-변수의-관계-해석" id="toc-주성분과-변수의-관계-해석" class="nav-link" data-scroll-target="#주성분과-변수의-관계-해석"><span class="header-section-number">8.4</span> 주성분과 변수의 관계 해석</a>
+  <ul class="collapse">
+  <li><a href="#로딩loadings의-개념과-해석-방법" id="toc-로딩loadings의-개념과-해석-방법" class="nav-link" data-scroll-target="#로딩loadings의-개념과-해석-방법"><span class="header-section-number">8.4.1</span> 로딩(loadings)의 개념과 해석 방법</a></li>
+  <li><a href="#외식산업-데이터-예제-고객만족-항목-분석" id="toc-외식산업-데이터-예제-고객만족-항목-분석" class="nav-link" data-scroll-target="#외식산업-데이터-예제-고객만족-항목-분석"><span class="header-section-number">8.4.2</span> 외식산업 데이터 예제: 고객만족 항목 분석</a></li>
+  <li><a href="#왜-해석이-애매할까" id="toc-왜-해석이-애매할까" class="nav-link" data-scroll-target="#왜-해석이-애매할까"><span class="header-section-number">8.4.3</span> 왜 해석이 애매할까?</a></li>
+  </ul></li>
+  <li><a href="#pca-적합성-검정" id="toc-pca-적합성-검정" class="nav-link" data-scroll-target="#pca-적합성-검정"><span class="header-section-number">8.5</span> PCA 적합성 검정</a>
+  <ul class="collapse">
+  <li><a href="#왜-적합성-검정이-중요한가" id="toc-왜-적합성-검정이-중요한가" class="nav-link" data-scroll-target="#왜-적합성-검정이-중요한가"><span class="header-section-number">8.5.1</span> 왜 적합성 검정이 중요한가</a></li>
+  <li><a href="#kmo-전체-상관행렬이-요인분석에-적합한지-판단" id="toc-kmo-전체-상관행렬이-요인분석에-적합한지-판단" class="nav-link" data-scroll-target="#kmo-전체-상관행렬이-요인분석에-적합한지-판단"><span class="header-section-number">8.5.2</span> KMO: 전체 상관행렬이 요인분석에 적합한지 판단</a></li>
+  <li><a href="#bartlett의-구형성-검정-상관행렬이-단위행렬인지-여부" id="toc-bartlett의-구형성-검정-상관행렬이-단위행렬인지-여부" class="nav-link" data-scroll-target="#bartlett의-구형성-검정-상관행렬이-단위행렬인지-여부"><span class="header-section-number">8.5.3</span> Bartlett의 구형성 검정: 상관행렬이 단위행렬인지 여부</a></li>
+  <li><a href="#분석-시-유의점" id="toc-분석-시-유의점" class="nav-link" data-scroll-target="#분석-시-유의점"><span class="header-section-number">8.5.4</span> 분석 시 유의점</a></li>
+  </ul></li>
+  <li><a href="#pca의-활용과-한계" id="toc-pca의-활용과-한계" class="nav-link" data-scroll-target="#pca의-활용과-한계"><span class="header-section-number">8.6</span> PCA의 활용과 한계</a>
+  <ul class="collapse">
+  <li><a href="#pca의-대표적-활용-분야" id="toc-pca의-대표적-활용-분야" class="nav-link" data-scroll-target="#pca의-대표적-활용-분야"><span class="header-section-number">8.6.1</span> PCA의 대표적 활용 분야</a></li>
+  <li><a href="#pca의-근본적-한계" id="toc-pca의-근본적-한계" class="nav-link" data-scroll-target="#pca의-근본적-한계"><span class="header-section-number">8.6.2</span> PCA의 근본적 한계</a></li>
+  <li><a href="#비판적-사고-문제-분산-10라도-버려도-되는가" id="toc-비판적-사고-문제-분산-10라도-버려도-되는가" class="nav-link" data-scroll-target="#비판적-사고-문제-분산-10라도-버려도-되는가"><span class="header-section-number">8.6.3</span> 비판적 사고 문제: “분산 10%라도 버려도 되는가?”</a></li>
+  <li><a href="#정리-및-시사점" id="toc-정리-및-시사점" class="nav-link" data-scroll-target="#정리-및-시사점"><span class="header-section-number">8.6.4</span> 정리 및 시사점</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">차원축소와 주성분 분석</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="차원축소란-무엇인가" class="level3" data-number="8.0.1">
+<h3 data-number="8.0.1" class="anchored" data-anchor-id="차원축소란-무엇인가"><span class="header-section-number">8.0.1</span> 차원축소란 무엇인가?</h3>
+<p>갑자기 차원축소라는 단어가 나와서 당황스러울 것이다.</p>
+<p>통계 혹은 데이터 분석에서 갑자기 차원축소라니 무슨 뜻일까? 보통 차원(dimension)이란 단어는 물리학에서 자주 등장한다. 통계에서 차원은 다소 낯설긴 하지만 수리적인 접근에서 보자면 통계도 수리적인 차원의 계산을 기본으로 하다보니 차원이라는 개념이 등장한다.</p>
+<p>통계 혹은 데이터 분석에서 <strong>차원이란 데이터에서 변수 한 개</strong>를 의미한다. 그렇다면, 왜 차원을 축소한다는 걸까?</p>
+<p>데이터를 분석할 때 가장 먼저 부딪히는 현실적인 문제 중 하나는 <strong>변수가 너무 많다</strong>는 점이다. 설문조사나 매장 평가표, 고객 피드백 데이터 등 외식산업 현장에서 수집되는 데이터는 수십 개의 항목으로 구성되곤 한다. 처음에는 가능한 많은 정보를 확보하는 것이 중요해 보일 수 있지만, 실제 분석에 들어가면 이 많은 변수들이 분석을 복잡하게 만들고 해석을 어렵게 만든다.</p>
+<p>변수가 많다는 것은 데이터 자체가 고차원 데이터라는 의미이다.</p>
+<p>이 장에서는 이러한 <strong>고차원 데이터의 문제점</strong>을 소개하고, 이를 해결하기 위한 방법 중 하나인 <strong>차원축소(Dimension Reduction)</strong>의 개념을 탐구한다. 특히, 외식경영 실무에서 자주 접할 수 있는 예제를 중심으로 차원축소의 필요성과 가능성을 이해해 보자.</p>
+</section>
+<section id="외식-데이터의-차원이란-무엇인가" class="level3" data-number="8.0.2">
+<h3 data-number="8.0.2" class="anchored" data-anchor-id="외식-데이터의-차원이란-무엇인가"><span class="header-section-number">8.0.2</span> 외식 데이터의 차원이란 무엇인가?</h3>
+<p>차원은 곧 <strong>변수의 개수</strong>를 의미한다. 예를 들어 고객만족도 조사를 통해 다음과 같은 문항을 수집했다고 가정하자. 한 매장에 대해 아래와 같은 항목으로 만족도를 평가했다고 하자.</p>
+<table class="table-striped table-hover table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 80%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">문항코드</th>
+<th style="text-align: center;">문항 내용</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Q1</td>
+<td style="text-align: center;">음식의 맛에 만족하는가</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Q2</td>
+<td style="text-align: center;">음식의 양은 적절했는가</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Q3</td>
+<td style="text-align: center;">메뉴의 다양성은 충분했는가</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Q4</td>
+<td style="text-align: center;">직원의 응대는 친절했는가</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Q5</td>
+<td style="text-align: center;">음식 제공 속도는 적절했는가</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Q6</td>
+<td style="text-align: center;">매장 내 청결 상태는 만족스러운가</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Q7</td>
+<td style="text-align: center;">내부 인테리어는 쾌적했는가</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Q8</td>
+<td style="text-align: center;">좌석 배치가 편안했는가</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Q9</td>
+<td style="text-align: center;">가격대가 합리적인가</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Q10</td>
+<td style="text-align: center;">전반적인 만족도를 어떻게 평가하는가</td>
+</tr>
+</tbody>
+</table>
+<p>이런 문항이 총 20개에 이른다고 가정하면, 각 고객이 20차원의 점으로 표현되는 셈이다. 즉, 고객 1명은 20개의 평가 점수를 가진다. 이런 식의 데이터가 300명에 대해 수집되었다면 300개의 20차원 점이 모이게 된다.</p>
+<p>이제 문제는, 이 20개의 변수 중에서 <strong>모두가 정말로 독립적인 정보일까?</strong>라는 것이다.</p>
+</section>
+<section id="너무-많은-변수-왜-문제인가" class="level3" data-number="8.0.3">
+<h3 data-number="8.0.3" class="anchored" data-anchor-id="너무-많은-변수-왜-문제인가"><span class="header-section-number">8.0.3</span> 너무 많은 변수, 왜 문제인가?</h3>
+<p>변수가 많으면 다음과 같은 문제점이 생긴다.</p>
+<p>첫째, <strong>해석이 어렵다</strong>. 어떤 고객이 전반적인 만족도가 낮다고 했을 때, 그 원인이 맛 때문인지, 가격 때문인지, 청결 때문인지 판단하기가 쉽지 않다.</p>
+<p>둘째, <strong>변수들 사이에 중복된 정보가 존재할 수 있다</strong>. 예를 들어 ’음식의 맛’과 ’음식의 양’에 대한 만족도는 유사한 경향을 보일 수 있다.</p>
+<p>셋째, <strong>모델이 과적합(overfitting)될 가능성이 높아진다</strong>. 변수의 수가 관측값 수에 비해 많아질수록 통계모델은 데이터를 과도하게 설명하려고 하게 된다.</p>
+<p>이런 이유로, <strong>차원축소는 선택이 아니라 필수</strong>가 된다.</p>
+</section>
+<section id="차원을-줄이면-무엇이-좋아지나" class="level3" data-number="8.0.4">
+<h3 data-number="8.0.4" class="anchored" data-anchor-id="차원을-줄이면-무엇이-좋아지나"><span class="header-section-number">8.0.4</span> 차원을 줄이면 무엇이 좋아지나?</h3>
+<p>차원을 줄인다는 것은 곧, 여러 변수들을 하나의 대표 변수로 축약해 새로운 ’요약 지표’를 만드는 것이다. 예를 들어 음식의 맛, 양, 메뉴 다양성 등의 항목들을 하나의 ’음식 품질’이라는 대표 변수로 요약할 수 있다면, 분석은 훨씬 단순하고 해석 가능해진다.</p>
+<p>이를 통해 얻는 이점은 다음과 같다.<br>
+<strong>-</strong> <strong>핵심 요인의 식별</strong>: 고객 만족도에 영향을 주는 진짜 요인을 찾을 수 있다. <br> <strong>-</strong> <strong>효율적인 데이터 시각화</strong>: 2차원, 3차원 공간에 데이터를 그릴 수 있게 된다. <br> <strong>-</strong> <strong>모델 단순화</strong>: 불필요한 변수 제거로 예측 모델의 안정성과 해석력이 향상된다. <br></p>
+</section>
+<section id="실습-예제-30개-매장-20개-만족도-항목" class="level3" data-number="8.0.5">
+<h3 data-number="8.0.5" class="anchored" data-anchor-id="실습-예제-30개-매장-20개-만족도-항목"><span class="header-section-number">8.0.5</span> 실습 예제: 30개 매장, 20개 만족도 항목</h3>
+<p>외식업체가 전국의 30개 매장에서 고객만족도 데이터를 수집했다고 가정하자. 각 매장은 20개의 평가항목(Q1~Q20)에 대해 고객들로부터 평균 점수를 산출했다. 데이터는 다음과 같이 구성된다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 데이터 불러오기</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/ch7_data1.csv"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       Q1                 Q2                  Q3                 Q4          
+ Min.   :-3.30397   Min.   :-3.218637   Min.   :-3.12413   Min.   :-3.11765  
+ 1st Qu.:-0.75179   1st Qu.:-0.666921   1st Qu.:-0.69852   1st Qu.:-0.70591  
+ Median : 0.02054   Median :-0.004300   Median : 0.03173   Median :-0.02347  
+ Mean   : 0.02197   Mean   : 0.007298   Mean   :-0.01296   Mean   :-0.02486  
+ 3rd Qu.: 0.69615   3rd Qu.: 0.754074   3rd Qu.: 0.70221   3rd Qu.: 0.67781  
+ Max.   : 3.77748   Max.   : 3.560373   Max.   : 4.13400   Max.   : 3.27877  
+       Q5                  Q6                 Q7                 Q8          
+ Min.   :-2.799923   Min.   :-2.48486   Min.   :-2.58339   Min.   :-2.78220  
+ 1st Qu.:-0.647184   1st Qu.:-0.70156   1st Qu.:-0.62782   1st Qu.:-0.64996  
+ Median :-0.068238   Median :-0.01616   Median : 0.02933   Median : 0.09586  
+ Mean   :-0.006197   Mean   :-0.01642   Mean   : 0.06577   Mean   : 0.09838  
+ 3rd Qu.: 0.573723   3rd Qu.: 0.64196   3rd Qu.: 0.73468   3rd Qu.: 0.81816  
+ Max.   : 3.163072   Max.   : 3.16654   Max.   : 3.09384   Max.   : 3.24827  
+       Q9                 Q10                Q11                Q12          
+ Min.   :-2.693614   Min.   :-3.12991   Min.   :-3.09593   Min.   :-3.32982  
+ 1st Qu.:-0.694263   1st Qu.:-0.58637   1st Qu.:-0.58794   1st Qu.:-0.66113  
+ Median :-0.002617   Median : 0.11276   Median : 0.09388   Median : 0.12295  
+ Mean   : 0.057173   Mean   : 0.08894   Mean   : 0.06734   Mean   : 0.09147  
+ 3rd Qu.: 0.741851   3rd Qu.: 0.82727   3rd Qu.: 0.81690   3rd Qu.: 0.83016  
+ Max.   : 2.653609   Max.   : 2.67790   Max.   : 2.84575   Max.   : 3.11993  </code></pre>
+</div>
+</div>
+<p>위 코드는 Q1~Q20까지 20개의 항목을 가진 고객 데이터 300명을 무작위로 생성한 예시다. 실제로는 고객설문 또는 POS 데이터에서 수집한 정보가 될 수 있다.</p>
+<p>이 데이터를 보면 표면적으로는 20개의 서로 다른 항목으로 구성되어 있지만, 실제로는 몇몇 항목들이 유사한 정보를 담고 있다는 점을 쉽게 확인할 수 있다. 이처럼 <strong>상관관계가 높은 변수들</strong>이 존재할 경우, 주성분 분석(PCA: Principal Component Analysis)을 통해 이들을 하나의 축으로 묶을 수 있다.</p>
+</section>
+<section id="실제-외식-경영-현장에서의-차원축소-활용" class="level3" data-number="8.0.6">
+<h3 data-number="8.0.6" class="anchored" data-anchor-id="실제-외식-경영-현장에서의-차원축소-활용"><span class="header-section-number">8.0.6</span> 실제 외식 경영 현장에서의 차원축소 활용</h3>
+<p>차원축소 기법은 외식업 실무에서 다음과 같이 활용할 수 있다.</p>
+<p><strong>1. 메뉴 선호도 조사</strong>: 고객이 평가한 다양한 메뉴 항목(맛, 건강함, 양, 가격 등)을 축소해 핵심 선호 패턴 도출 <br> <strong>2. 브랜드 이미지 조사</strong>: 30개 이상의 이미지 속성 평가 항목에서 2~3개의 요인(고급/대중, 전통/현대 등)만 추출 <br> <strong>3. 직원 서비스 품질 분석</strong>: 응대태도, 전문성, 청결, 복장 등 다양한 항목을 단순화해 핵심 서비스 요인 도출 <br> <strong>4. 소셜미디어 텍스트 분석</strong>: 다양한 키워드 빈도를 요약해 핵심 소비 트렌드를 파악 <br></p>
+</section>
+<section id="다음으로-넘어가기-전-확인할-질문" class="level3" data-number="8.0.7">
+<h3 data-number="8.0.7" class="anchored" data-anchor-id="다음으로-넘어가기-전-확인할-질문"><span class="header-section-number">8.0.7</span> 다음으로 넘어가기 전 확인할 질문</h3>
+<p><strong>-</strong> 이 데이터에서 정말 20개의 항목이 모두 필요한가? <br> <strong>-</strong> 고객만족도 항목을 축소한다면 어떤 기준으로 묶을 수 있을까? <br> <strong>-</strong> 변수 간의 상관관계를 시각화하면 어떤 구조가 보일까? <br></p>
+<p>이러한 질문들을 해결하기 위한 가장 대표적인 방법이 바로 <strong>주성분분석(PCA)</strong>이다. 다음 절에서는 PCA와 유사한 다른 방법들, 그리고 PCA 자체의 작동 원리에 대해 살펴본다.</p>
+</section>
+<section id="주성분분석과-요인분석의-차이" class="level3" data-number="8.0.8">
+<h3 data-number="8.0.8" class="anchored" data-anchor-id="주성분분석과-요인분석의-차이"><span class="header-section-number">8.0.8</span> 주성분분석과 요인분석의 차이</h3>
+<p>데이터를 분석하다 보면 비슷한 기법들이 존재하는 경우가 많다. 특히 <strong>차원축소</strong>와 관련된 분석에서는 주성분분석(PCA)과 요인분석(FA)을 혼동하기 쉽다. 두 방법은 모두 많은 변수를 적은 수의 지표로 축약한다는 점에서 유사하지만, 그 <strong>분석 목적과 수학적 전제는 완전히 다르다</strong>.</p>
+<p>이 장에서는 PCA와 FA의 구조적 차이를 외식산업 사례와 함께 살펴보고, 어떤 상황에서 어떤 분석이 적절한지를 이해할 수 있도록 한다.</p>
+</section>
+<section id="분석-목적의-차이-축소-vs-탐색" class="level3" data-number="8.0.9">
+<h3 data-number="8.0.9" class="anchored" data-anchor-id="분석-목적의-차이-축소-vs-탐색"><span class="header-section-number">8.0.9</span> 분석 목적의 차이: 축소 vs 탐색</h3>
+<p>기본적으로 차원축소에는 대표적인 두 가지 방법이 있다. 하나가 <strong>주성분 분석 (PCA: Principal Component Analysis)</strong>이고, 다른 하나가 <strong>요인 분석 (Factor Analysis)</strong>이다. 이공계열에서는 이 두 분석 방법을 수리적으로 접근하고 증명하는 과정을 초반에 거치기 때문에 두 분석의 차이점을 분명하게 이해하는 것이 일반적인다. 문제는 사화과학자들의 경우 이러한 수리적 접근보다는 통계 프로그램을 이용한 분석과 해석에 초점을 맞추기 때문에 이 둘의 차이를 거의 이해하지 못하고, 오히려 이 둘을 같은 방법이라고 생각하는 경우가 많다.</p>
+<p>이러한 오해를 줄이기 위해 기본적으로 이 두 방법의 차이를 이해할 필요가 있다.</p>
+<p>PCA는 단어 그대로 ’주요 성분(principal component)’을 찾는 데 집중한다. 관측된 변수들 간의 분산을 최대한 유지하면서, 서로 상관관계가 높은 변수들을 새로운 축으로 재구성하는 것이 목적이다. 즉, <strong>PCA는 정보 손실을 최소화하면서 차원을 축소</strong>하는 데 초점을 둔다.</p>
+<p>반면 요인 분석(FA: Factor Analysis)는 변수들 사이의 공통된 원인을 추정하려는 데 목적이 있다. 즉, 관측된 변수들 이면에 존재한다고 가정되는 <strong>잠재요인(latent factor)</strong>을 찾아내는 것이 핵심이다. 요인 분석은 변수의 분산을 <strong>공통분산(common variance)</strong>과 <strong>고유분산(unique variance)</strong>으로 나누어 설명한다.</p>
+<p>이 차이는 다음 표처럼 정리할 수 있다.</p>
+<table class="table-striped table-hover table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 35%">
+<col style="width: 40%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">구분</th>
+<th style="text-align: center;">주성분분석 (PCA)</th>
+<th style="text-align: center;">요인분석 (FA)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">분석 목적</td>
+<td style="text-align: center;">정보 축소</td>
+<td style="text-align: center;">잠재요인 탐색</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">분산 구성</td>
+<td style="text-align: center;">Total variance</td>
+<td style="text-align: center;">Common + Unique variance</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">고유분산 가정</td>
+<td style="text-align: center;">없음</td>
+<td style="text-align: center;">존재함</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">주성분 수 결정</td>
+<td style="text-align: center;">분산 설명 비율 기준</td>
+<td style="text-align: center;">이론적 요인 수 또는 Scree plot 기준</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">해석 기준</td>
+<td style="text-align: center;">축의 분산</td>
+<td style="text-align: center;">요인의 해석력 (loading)</td>
+</tr>
+</tbody>
+</table>
+<p>가장 큰 차이는 요인 분석의 경우 설명이 되는 공통 분산 (Common Variance)를 요인으로 가지고 가지만 설명이 되지 않는 고유 분산(Unique Variance)는 버린다는 점이다. 반면, 주성분 분석은 버리는 분산 없이 모두를 가지고 가는 경향이 있다. 결국 차원축소의 두 방법론의 핵심은 분산이다. 여전히 분산이 통계의 중심이고 통계는 분산의 마법인 셈이다.</p>
+</section>
+<section id="외식산업에서의-예시-비교" class="level3" data-number="8.0.10">
+<h3 data-number="8.0.10" class="anchored" data-anchor-id="외식산업에서의-예시-비교"><span class="header-section-number">8.0.10</span> 외식산업에서의 예시 비교</h3>
+<p>A 프랜차이즈는 전국 100개 매장의 서비스 품질을 평가하기 위해 다음과 같은 12개 항목의 고객설문을 수집하였다. 이 변수들은 크게 네 가지 영역(서비스 품질, 음식 품질, 매장 환경, 가격과 구성)으로 나눠볼 수 있다고 예상된다.</p>
+<table class="table-striped table-hover table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 80%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">코드</th>
+<th style="text-align: center;">문항 내용</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Q1</td>
+<td style="text-align: center;">직원이 친절하게 응대했다</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Q2</td>
+<td style="text-align: center;">주문 처리가 신속했다</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Q3</td>
+<td style="text-align: center;">직원이 메뉴에 대해 잘 알고 있었다</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Q4</td>
+<td style="text-align: center;">음식의 맛이 좋았다</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Q5</td>
+<td style="text-align: center;">음식의 양이 적절했다</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Q6</td>
+<td style="text-align: center;">음식이 신선하게 느껴졌다</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Q7</td>
+<td style="text-align: center;">매장이 청결했다</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Q8</td>
+<td style="text-align: center;">조명이 쾌적했다</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Q9</td>
+<td style="text-align: center;">좌석이 편안했다</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Q10</td>
+<td style="text-align: center;">가격이 합리적이었다</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Q11</td>
+<td style="text-align: center;">메뉴 구성이 다양했다</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Q12</td>
+<td style="text-align: center;">전반적인 만족도를 평가하자면?</td>
+</tr>
+</tbody>
+</table>
+<p>이 데이터를 요약하려는 목적이 단지 변수 수를 줄이는 것이라면 주성분분석을 사용하고, 각 항목들이 어떤 잠재요인으로부터 영향을 받고 있는지를 추정하고자 한다면 요인분석 사용해야 한다.</p>
+</section>
+<section id="분석-결과가-다르게-나오는-이유" class="level3" data-number="8.0.11">
+<h3 data-number="8.0.11" class="anchored" data-anchor-id="분석-결과가-다르게-나오는-이유"><span class="header-section-number">8.0.11</span> 분석 결과가 다르게 나오는 이유</h3>
+<p>주성분분석은 고유분산을 고려하지 않고, 변수들 전체의 분산을 설명하는 성분을 찾는다. 따라서 <strong>노이즈나 측정오차까지도 포함하여 설명</strong>하려는 경향이 있다. 반면 요인분석은 관측된 변수들이 공통된 구조를 기반으로 움직인다고 가정하고, <strong>측정오차를 분리</strong>하려 한다.</p>
+<p>예를 들어 고객이 ’직원이 친절했는가’에 대해 낮은 점수를 줬다면, 그 이유가 단순히 그 날의 우연한 경험인지 아니면 점포 전반의 서비스 품질 문제인지 파악할 수 있어야 한다. 주성분분석은 이 두 가능성을 구분하지 않지만, 요인분석은 <strong>공통요인에 기인한 응답 패턴만을 모델링</strong>한다.</p>
+</section>
+<section id="r-실습-동일한-데이터로-pca-vs-fa-비교" class="level3" data-number="8.0.12">
+<h3 data-number="8.0.12" class="anchored" data-anchor-id="r-실습-동일한-데이터로-pca-vs-fa-비교"><span class="header-section-number">8.0.12</span> R 실습: 동일한 데이터로 PCA vs FA 비교</h3>
+<p>앞서 생성한 데이터(<code>data</code>)를 활용하여 두 분석을 실행해 보자.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(psych)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(data)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 요인 수 추정: FA 및 PCA 병행</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="fu">fa.parallel</span>(data, <span class="at">fa =</span> <span class="st">"both"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Chapter8_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Parallel analysis suggests that the number of factors =  4  and the number of components =  4 </code></pre>
+</div>
+</div>
+<p>위의 fa.parallel() 함수는 Scree plot과 병렬분석을 함께 출력하며, 주성분분석과 요인분석에서 적절한 요인 수를 제안한다. 이후 요인분석을 4요인으로 실행한다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 요인분석 실행</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>fa_result <span class="ot">&lt;-</span> <span class="fu">fa</span>(data, <span class="at">nfactors =</span> <span class="dv">4</span>, <span class="at">rotate =</span> <span class="st">"varimax"</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fa_result<span class="sc">$</span>loadings, <span class="at">cutoff =</span> <span class="fl">0.3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Loadings:
+    MR1    MR3    MR4    MR2   
+Q1                 0.955       
+Q2                 0.956       
+Q3                 0.959       
+Q4          0.957              
+Q5          0.956              
+Q6          0.961              
+Q7                        0.949
+Q8                        0.952
+Q9                        0.966
+Q10  0.955                     
+Q11  0.957                     
+Q12  0.965                     
+
+                 MR1   MR3   MR4   MR2
+SS loadings    2.765 2.755 2.752 2.741
+Proportion Var 0.230 0.230 0.229 0.228
+Cumulative Var 0.230 0.460 0.689 0.918</code></pre>
+</div>
+</div>
+</section>
+<section id="실무-판단-기준-어떤-분석을-선택할-것인가" class="level3" data-number="8.0.13">
+<h3 data-number="8.0.13" class="anchored" data-anchor-id="실무-판단-기준-어떤-분석을-선택할-것인가"><span class="header-section-number">8.0.13</span> 실무 판단 기준: 어떤 분석을 선택할 것인가</h3>
+<p>주성분분석과 요인분석 중 어느 쪽을 사용할지는 단지 통계적 판단이 아니라 비즈니스 목적에 따라 달라진다. 다음은 외식경영 의사결정에서 고려해야 할 판단 기준이다.</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th>분석 목적</th>
+<th>적절한 방법</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>문항 수가 너무 많아 요약하고 싶을 때</td>
+<td>PCA</td>
+</tr>
+<tr class="even">
+<td>고객 행동의 잠재된 구조를 파악하고자 할 때</td>
+<td>FA</td>
+</tr>
+<tr class="odd">
+<td>예측모델의 입력 변수를 축소하고자 할 때</td>
+<td>PCA</td>
+</tr>
+<tr class="even">
+<td>설문 문항을 줄이고 핵심 요인을 탐색할 때</td>
+<td>FA</td>
+</tr>
+</tbody>
+</table>
+<p>두 방법은 겉보기에는 비슷해 보이지만, <strong>그 뿌리부터 다르다.</strong> 주성분분석은 “정보 요약과 압축”을 목표로 한다면, 요인분석은 “보이지 않는 구조를 추정”하는 데 목적이 있다. 외식산업 데이터를 다룰 때에도 목적에 따라 두 기법을 구분해서 적용할 수 있어야 한다.</p>
+<p>특히, 실제 분석에서는 두 방법을 모두 실행해보고 결과를 비교한 뒤, 분석 목적에 더 부합하는 방식으로 해석하는 것이 중요하다. 다음 장에서는 공분산과 상관관계의 차이를 이해하고, 이를 기반으로 주성분을 어떻게 도출하는지를 다룬다.</p>
+</section>
+<section id="공분산과-상관관계의-이해" class="level2" data-number="8.1">
+<h2 data-number="8.1" class="anchored" data-anchor-id="공분산과-상관관계의-이해"><span class="header-section-number">8.1</span> 공분산과 상관관계의 이해</h2>
+<p>주성분분석(PCA)은 변수 간의 <strong>상관성</strong>을 이용하여 차원을 축소하는 분석이다. 하지만 변수들 간의 상관성이 있다는 말은 무슨 의미일까? 왜 상관관계나 공분산을 따지는 것일까? PCA의 수학적 기반을 이해하려면, 그 출발점은 바로 <strong>공분산과 상관계수</strong>의 개념이다.</p>
+<p>이번 절에서는 공분산(covariance)이 무엇인지, 상관관계(correlation)와 어떤 차이가 있는지, 그리고 실제 외식산업 데이터에서 어떻게 계산하고 해석하는지를 살펴본다.</p>
+<section id="분산과-공분산의-개념" class="level3" data-number="8.1.1">
+<h3 data-number="8.1.1" class="anchored" data-anchor-id="분산과-공분산의-개념"><span class="header-section-number">8.1.1</span> 분산과 공분산의 개념</h3>
+<p>통계에서 분산(variance)은 하나의 변수가 평균값으로부터 얼마나 퍼져 있는지를 나타내는 값이다. 예를 들어 고객이 한 매장에 대해 평가한 ‘가격만족도’ 점수가 평균에서 얼마나 멀리 떨어져 있는지를 측정하는 지표이다.</p>
+<p>반면, <strong>공분산(covariance)</strong>은 두 개의 변수 간에 얼마나 함께 움직이는지를 나타낸다. 두 변수의 값이 동시에 크거나 작아지는 경향이 있다면 공분산은 양수이고, 한 쪽이 클 때 다른 쪽이 작아지는 경향이 있으면 공분산은 음수이다.</p>
+<p>공분산은 다음과 같이 계산된다.</p>
+<p><span class="math display">\[
+\text{Cov}(X, Y) = \frac{1}{n-1} \sum_{i=1}^{n}(x_i - \bar{x})(y_i - \bar{y})
+\]</span></p>
+<p>예를 들어 어떤 고객이 음식의 맛(Q4)에 높은 점수를 준 경우, 음식의 양(Q5)에도 높은 점수를 줄 가능성이 높다면 두 변수는 양의 공분산을 갖는다.</p>
+</section>
+<section id="공분산-행렬이란-무엇인가" class="level3" data-number="8.1.2">
+<h3 data-number="8.1.2" class="anchored" data-anchor-id="공분산-행렬이란-무엇인가"><span class="header-section-number">8.1.2</span> 공분산 행렬이란 무엇인가</h3>
+<p>변수가 2개 이상일 경우, 모든 변수 쌍에 대해 공분산을 계산할 수 있다. 이를 표로 정리한 것이 <strong>공분산 행렬(covariance matrix)</strong>이다. 공분산 행렬의 대각 원소는 각 변수의 분산이며, 비대각 원소는 두 변수 간의 공분산을 나타낸다.</p>
+<p>예를 들어 Q4~Q6까지 음식 품질 관련 3개 변수에 대한 공분산 행렬은 다음과 같은 구조를 가진다.</p>
+<table class="table-striped table-hover table">
+<thead>
+<tr class="header">
+<th style="text-align: center;"></th>
+<th style="text-align: center;">Q4</th>
+<th style="text-align: center;">Q5</th>
+<th style="text-align: center;">Q6</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><strong>Q4</strong></td>
+<td style="text-align: center;">Var(Q4)</td>
+<td style="text-align: center;">Cov(Q4,Q5)</td>
+<td style="text-align: center;">Cov(Q4,Q6)</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>Q5</strong></td>
+<td style="text-align: center;">Cov(Q5,Q4)</td>
+<td style="text-align: center;">Var(Q5)</td>
+<td style="text-align: center;">Cov(Q5,Q6)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>Q6</strong></td>
+<td style="text-align: center;">Cov(Q6,Q4)</td>
+<td style="text-align: center;">Cov(Q6,Q5)</td>
+<td style="text-align: center;">Var(Q6)</td>
+</tr>
+</tbody>
+</table>
+<p>PCA는 바로 이 공분산 행렬의 <strong>고유값 분해(eigen decomposition)</strong>를 통해 주성분을 찾는다.</p>
+</section>
+<section id="상관관계는-왜-필요한가" class="level3" data-number="8.1.3">
+<h3 data-number="8.1.3" class="anchored" data-anchor-id="상관관계는-왜-필요한가"><span class="header-section-number">8.1.3</span> 상관관계는 왜 필요한가</h3>
+<p>공분산은 단점이 있다. 값의 단위(scale)에 따라 크기가 달라진다는 점이다. 예를 들어 음식의 맛(Q4)은 5점 척도, 음식 양(Q5)은 10점 척도로 평가했다면 공분산 값은 두 척도에 영향을 받는다.</p>
+<p>이 문제를 해결하기 위해 사용하는 것이 <strong>상관계수(correlation coefficient)</strong>이다. 상관계수는 공분산을 각 변수의 표준편차로 나눈 값으로, 공분산을 표준화(Standardization)한 것이 바로 상관계수이다. 상관계수는 두 변수 간의 <strong>상대적인 관계의 강도</strong>를 -1부터 1 사이의 값으로 표준화해 보여준다.</p>
+<p><span class="math display">\[
+\text{Cor}(X, Y) = \frac{\text{Cov}(X, Y)}{\sigma_X \cdot \sigma_Y}
+\]</span></p>
+<p>상관계수가 0.8 이상이면 매우 강한 양의 상관관계, -0.8 이하면 매우 강한 음의 상관관계로 해석한다. PCA를 할 때, <strong>변수의 단위가 다르거나 변수 간 분산의 차이가 클 경우 상관행렬 기반 PCA(correlation-based PCA)</strong>를 사용하는 것이 더 바람직하다.</p>
+</section>
+<section id="외식산업-실무-예제-고객만족도-항목의-상관구조" class="level3" data-number="8.1.4">
+<h3 data-number="8.1.4" class="anchored" data-anchor-id="외식산업-실무-예제-고객만족도-항목의-상관구조"><span class="header-section-number">8.1.4</span> 외식산업 실무 예제: 고객만족도 항목의 상관구조</h3>
+<p>다음은 한 외식브랜드가 수집한 고객만족도 데이터의 일부이다. Q1~Q12까지는 다양한 서비스 항목에 대한 고객 평가 점수이며, 앞서 생성한 데이터를 활용한다.</p>
+<p>이제 각 변수들 간의 상관행렬을 구하고 이를 시각화해 보자.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 필요한 패키지 로드</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(psych)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 데이터 로드</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/ch7_data1.csv"</span>)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 상관행렬 계산</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>cor_matrix <span class="ot">&lt;-</span> <span class="fu">cor</span>(data)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 히트맵 시각화</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="fu">heatmap</span>(cor_matrix, <span class="at">main=</span><span class="st">"문항 간 상관관계 히트맵"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Chapter8_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>이 히트맵을 통해 어떤 문항들이 서로 밀접하게 연관되어 있는지를 한눈에 파악할 수 있다. 예를 들어 Q1~Q3은 모두 직원 서비스에 관련된 문항이므로 서로 높은 상관관계를 가질 것으로 예상된다. 반면, Q1과 Q11은 서로 관련성이 적은 항목이기 때문에 낮은 상관계수를 가질 가능성이 높다.</p>
+</section>
+<section id="상관관계-해석의-함정" class="level3" data-number="8.1.5">
+<h3 data-number="8.1.5" class="anchored" data-anchor-id="상관관계-해석의-함정"><span class="header-section-number">8.1.5</span> 상관관계 해석의 함정</h3>
+<p>상관계수는 두 변수 간의 선형 관계를 측정하지만, <strong>인과관계를 보장하지 않는다.</strong> 예를 들어 음식의 맛(Q4)과 직원의 친절함(Q1)이 양의 상관관계를 보인다고 해도, 직원이 친절해서 음식이 맛있다고 단정할 수는 없다. 이는 단지 두 평가가 비슷한 방향으로 움직인다는 통계적 결과일 뿐이다.</p>
+<p>또한 상관계수는 <strong>편상관(partial correlation)</strong>이 아니라는 점에서 제3의 변수에 영향을 받을 수 있다. 예를 들어 가격 만족도(Q10)와 음식 만족도(Q5)가 높은 상관을 보이는 이유는 실제로는 Q12(전체 만족도)가 영향을 미친 결과일 수도 있다.</p>
+</section>
+<section id="왜-pca-전에-상관행렬을-확인해야-하는가" class="level3" data-number="8.1.6">
+<h3 data-number="8.1.6" class="anchored" data-anchor-id="왜-pca-전에-상관행렬을-확인해야-하는가"><span class="header-section-number">8.1.6</span> 왜 PCA 전에 상관행렬을 확인해야 하는가</h3>
+<p>PCA는 변수들 간에 일정 수준 이상의 상관성이 존재할 때 효과적으로 작동한다. 변수 간에 아무런 상관관계도 없다면, 차원축소는 무의미하다. 따라서 PCA를 하기 전에는 반드시 상관행렬을 살펴보아야 하며, 그 구조를 통해 어떤 변수들이 함께 묶일 가능성이 있는지를 파악하는 것이 중요하다.</p>
+<p>다음 절에서는 이 상관구조로부터 어떻게 고유값과 고유벡터를 도출하여 주성분을 계산하는지를 알아본다.</p>
+</section>
+</section>
+<section id="pca의-수학적-원리" class="level2" data-number="8.2">
+<h2 data-number="8.2" class="anchored" data-anchor-id="pca의-수학적-원리"><span class="header-section-number">8.2</span> PCA의 수학적 원리</h2>
+<p>주성분분석(PCA)은 직관적으로는 변수가 많은 데이터를 적은 수의 요약된 축으로 표현하는 분석 방법이다. 하지만 그 이면에는 선형대수학이라는 수학적 구조가 존재한다. 특히 <strong>고유값(eigenvalue)</strong>과 <strong>고유벡터(eigenvector)</strong>라는 개념이 핵심을 이룬다. 이 절에서는 PCA가 어떻게 수학적으로 작동하는지를 시각적으로 이해할 수 있도록 설명하고, 실제 외식산업 데이터를 통해 확인해본다.</p>
+<section id="왜-고유값과-고유벡터가-중요한가" class="level3" data-number="8.2.1">
+<h3 data-number="8.2.1" class="anchored" data-anchor-id="왜-고유값과-고유벡터가-중요한가"><span class="header-section-number">8.2.1</span> 왜 고유값과 고유벡터가 중요한가</h3>
+<p>PCA는 각 변수들 간의 <strong>상관성</strong>을 분석하여 가장 정보가 많은 방향(축)을 찾아낸다. 이 축은 단순한 평균이 아니라, 변수 간의 공분산을 반영한 최적의 방향이다. <strong>이 방향을 찾는 수학적 도구가 바로 고유벡터</strong>이며, <strong>이 축이 담고 있는 정보의 양</strong>을 나타내는 값이 <strong>고유값</strong>이다.</p>
+<p>공분산 행렬을 행렬 A라고 하면, PCA는 다음 식을 푸는 것이다.</p>
+<p><span class="math display">\[
+A \cdot x = \lambda \cdot x
+\]</span></p>
+<p>여기서 <span class="math inline">\(x\)</span>는 고유벡터(eigenvector), <span class="math inline">\(\lambda\)</span>는 고유값(eigen value)을 의미한다. 이 식은 “어떤 벡터 <span class="math inline">\(x\)</span>에 공분산 행렬을 곱했을 때 그 벡터의 방향은 유지되고 크기만 <span class="math inline">\(\lambda\)</span>배가 되는” 경우를 찾는 것이다.</p>
+<p>이러한 고유벡터들이 바로 <strong>주성분(Principal Components)</strong>이며, <strong>고유값</strong>은 <strong>그 주성분이 설명하는 데이터의 분산(정보량)</strong>을 의미한다. 따라서 <strong>고유값이 큰 순서대로 몇 개의 고유벡터만 남기고</strong> 나머지를 버리면 차원축소가 가능해진다. 결론적으로 고유값이 작은 고유벡터는 버리게 되는데 이는 어느 정도의 분산의 손실을 의미한다. 하지만 이 정도의 손실은 요인분석에 비하면 크지 않은 경우가 많다.</p>
+<p>간단한 예제를 통해 주성분 분석을 계산해 보자. 다음과 같은 분산<span class="math inline">\(\cdot\)</span>공분산 매트릭스가 있다고 가정해보자.</p>
+<p><span class="math display">\[
+\text{Cov}(x,y) =
+\begin{bmatrix}
+2 &amp; 1 \\
+1 &amp; 2
+\end{bmatrix}
+\]</span></p>
+<p>위의 공분산 매트릭스가 우리에게 주는 정보는 다음과 같다. 두 변수 <span class="math inline">\(x\)</span>와 <span class="math inline">\(y\)</span>의 분산은 각각 2이고 두 변수의 공분산은 1이다. 위의 <span class="math inline">\(\text{Cov}(x,y)\)</span>를 매트릭스 <span class="math inline">\(A\)</span>라고 하면 위의 식과 같이,</p>
+<p><span class="math display">\[
+A \cdot x = \lambda \cdot x
+\]</span></p>
+<p>위 식이 성립해야 하고, 우항을 좌측으로 옮기면,</p>
+<p><span class="math display">\[
+A \cdot x - \lambda \cdot x = 0
+\]</span></p>
+<p><span class="math display">\[
+(A - \lambda \cdot I) \cdot x = 0
+\]</span></p>
+<p>이 식이 만족하기 위해서는,</p>
+<p><span class="math display">\[
+(A - \lambda \cdot I) = 0
+\]</span></p>
+<p>가 만족되어야 한다. 이는 다시 다음을 만족해야 하므로,</p>
+<p><span class="math display">\[
+det(A - \lambda \cdot I) = 0
+\]</span></p>
+<p><span class="math display">\[
+det(A - \lambda \cdot I) = det
+\begin{bmatrix}
+2-\lambda &amp; 1 \\
+1 &amp; 2-\lambda
+\end{bmatrix}
+= 0
+\]</span></p>
+<p>고등학교 때 배운 것을 적용하면,</p>
+<p><span class="math display">\[
+(2-\lambda)^2 - 1 = 0
+\]</span></p>
+<p><span class="math display">\[
+(2-\lambda)^2 - 1 = \lambda^2 -4\lambda +3 = (\lambda -3)(\lambda -1) = 0
+\]</span></p>
+<p>이므로, <span class="math inline">\(\lambda = 3\)</span> 또는 <span class="math inline">\(\lambda = 1\)</span>이다. 여기서 구해진 <span class="math inline">\(\lambda\)</span> 값을 다시 <span class="math inline">\(A \cdot x = \lambda \cdot x\)</span>에 대입하면,</p>
+<p><span class="math display">\[
+\begin{bmatrix}
+2 &amp; 1 \\
+1 &amp; 2
+\end{bmatrix}
+\begin{bmatrix}
+x_1\\
+x_2
+\end{bmatrix}
+= 3
+\begin{bmatrix}
+x_1\\
+x_2
+\end{bmatrix}
+\]</span></p>
+<p>위의 행렬을 계산해보면 다음의 두 식이 나온다.</p>
+<p><span class="math display">\[
+\begin{align}
+2x_1 + x_2 &amp; = 3x_1 \\
+x_1 + 2x_2 &amp; = 3x_2
+\end{align}
+\]</span></p>
+<p>위의 두 식 모두 결론적으로 <span class="math inline">\(x_1 = x_2\)</span>가 되고,</p>
+<p><span class="math display">\[
+\begin{bmatrix}
+x_1\\
+x_2
+\end{bmatrix}
+=
+\begin{bmatrix}
+1\\
+1
+\end{bmatrix}
+\]</span></p>
+<p>다음은 <span class="math inline">\(\lambda = 1\)</span>일 때,</p>
+<p><span class="math display">\[
+\begin{bmatrix}
+2 &amp; 1 \\
+1 &amp; 2
+\end{bmatrix}
+\begin{bmatrix}
+x_1\\
+x_2
+\end{bmatrix}
+=
+\begin{bmatrix}
+x_1\\
+x_2
+\end{bmatrix}
+\]</span></p>
+<p>위의 행렬을 계산해보면 다음의 두 식이 나온다.</p>
+<p><span class="math display">\[
+\begin{align}
+2x_1 + x_2 &amp; = x_1 \\
+x_1 + 2x_2 &amp; = x_2
+\end{align}
+\]</span></p>
+<p>위의 두 식 모두 결론적으로 <span class="math inline">\(x_1 + x_2 = 0\)</span>이 되고,</p>
+<p><span class="math display">\[
+\begin{bmatrix}
+x_1\\
+x_2
+\end{bmatrix}
+=
+\begin{bmatrix}
+1\\
+-1
+\end{bmatrix}
+\]</span></p>
+<p>그렇다면, 이게 무슨 뜻일까? 기본적으로 우리가 가지고 시작한 공분산 매트릭스의 고유값 (<span class="math inline">\(\lambda\)</span>)가 1과 3인데, 이 공분산 행렬을 선형변환 했을 때, 방향은 바뀌지 않지만 크기만 변하는 벡터가 2개 있는데, 이 두 벡터는 그 크기가 1배와 3배가 된다는 의미로 해석된다. 이게 무슨 소리인가?</p>
+<p><span class="math inline">\(\lambda = 3\)</span>일 때, 고유벡터는 다음과 같았다.</p>
+<p><span class="math display">\[
+\begin{bmatrix}
+x_1\\
+x_2
+\end{bmatrix}
+=
+\begin{bmatrix}
+1\\
+1
+\end{bmatrix}
+\]</span></p>
+<p>이제 원래의 공분산 매트릭스와 계산을 다시 해보면,</p>
+<p><span class="math display">\[
+\begin{bmatrix}
+2 &amp; 1 \\
+1 &amp; 2
+\end{bmatrix}
+\begin{bmatrix}
+1\\
+1
+\end{bmatrix}
+=
+\begin{bmatrix}
+3\\
+3
+\end{bmatrix}
+\]</span></p>
+<p>이렇게 되는데, 이걸 설명해 보자면, 매트릭스 <span class="math inline">\(x\)</span>를 우리가 가진 공분산 매트릭스로 선형변환을 하면 위와 같이 나온다는 것이다. 즉, 2차원 평면상에서 원점으로부터 (1, 1)로 가는 벡터가 선형변환 이후 원점으로부터 (3, 3)의 벡터로 변환되는 것이다. 이는 방향은 변하지 않고 크기 즉, 여기서는 길이가 3배가 되는 것이다.</p>
+<p>이 값이 <span class="math inline">\(\lambda\)</span>값(= 3)이 가장 큰 고유값으로부터 구해진 벡터이므로 첫번째 주성분 (Principal Component)가 되는데, 이 고유값이 의미하는 바는 분산이다. 즉 두 변수의 분산은 각각 2였으므로 두 변수의 전체 분산은 <span class="math inline">\(2 + 2 = 4\)</span>가 된다. 따라서 우리가 가진 공분산 매트릭스의 데이터에서 3/4이 바로 이 첫 번째 주성분에 의해 설명되는 것이다. 이 첫 번째 주성분은 결국 75%의 분산을 설명하는 매우 중요한 주성분이다.</p>
+<p>두 번째, <span class="math inline">\(\lambda\)</span>는 1이었고, 여기서 구해진 고유벡터를 다시 원래의 공분산 매트릭스와 계산해 보면,</p>
+<p><span class="math display">\[
+\begin{bmatrix}
+2 &amp; 1 \\
+1 &amp; 2
+\end{bmatrix}
+\begin{bmatrix}
+1\\
+-1
+\end{bmatrix}
+=
+\begin{bmatrix}
+1\\
+-1
+\end{bmatrix}
+\]</span></p>
+<p>위에서 보듯이 두번째 고유값은 1이었으며 이는 전체 분산의 1/4이었고 두번째 고유벡터는 원점으로부터 (1, -1)로 가는 벡터가 된다. 이 벡터는 두 번째 벡터로서 전체분산의 25%를 설명하고 있고, 첫 번째 벡터와는 직각(90도)을 이룬다. 주성분분석은 계산상 자동적으로 주성분간에 상호 직각을 이루도록 설계되어져 있다. 물론 보다 새로운 혹은 어려운 알고리즘을 사용한다면 다소 차이가 있을 수 있으나 기본적인 전제는 직각이 된다.</p>
+<p>종합적으로 보자면, 주성분분석이란 공분산 매트릭스로부터 전체 분산과 공분산의 정보를 이용하여 데이터의 분산을 가장 잘 설명할 수 있는 고유벡터와 고유값을 구하여 순서대로 고유벡터와 고유값을 구한다.</p>
+</section>
+<section id="외식-데이터-예제-12개-문항-300명-응답" class="level3" data-number="8.2.2">
+<h3 data-number="8.2.2" class="anchored" data-anchor-id="외식-데이터-예제-12개-문항-300명-응답"><span class="header-section-number">8.2.2</span> 외식 데이터 예제: 12개 문항, 300명 응답</h3>
+<p>앞서 생성한 외식업 관련 고객만족도 데이터는 12개의 문항으로 구성되어 있으며, 다음과 같은 구조를 가진다.</p>
+<table class="table-striped table-hover table">
+<colgroup>
+<col style="width: 40%">
+<col style="width: 60%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">문항</th>
+<th style="text-align: center;">항목 내용</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Q1~Q3</td>
+<td style="text-align: center;">직원 서비스 평가</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Q4~Q6</td>
+<td style="text-align: center;">음식 품질 평가</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Q7~Q9</td>
+<td style="text-align: center;">매장 환경 평가</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Q10~Q12</td>
+<td style="text-align: center;">가격/구성 평가</td>
+</tr>
+</tbody>
+</table>
+<p>각 응답은 1~5점 척도로 측정되며, 총 300명의 응답이 수집되었다. 이제 이 데이터를 통해 PCA를 실행하고 고유값과 고유벡터가 어떻게 도출되는지를 살펴보자.</p>
+</section>
+<section id="pca-실행-및-결과-해석" class="level3" data-number="8.2.3">
+<h3 data-number="8.2.3" class="anchored" data-anchor-id="pca-실행-및-결과-해석"><span class="header-section-number">8.2.3</span> PCA 실행 및 결과 해석</h3>
+<p>R의 <code>prcomp()</code> 함수는 공분산 또는 상관행렬을 기반으로 PCA를 수행한다. 이 예제에서는 <code>scale=TRUE</code>를 지정해 변수의 단위 차이를 없애고 상관행렬 기반 PCA를 수행한다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 데이터 불러오기</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/ch7_data1.csv"</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># PCA 실행</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>pca_model <span class="ot">&lt;-</span> <span class="fu">prcomp</span>(data, <span class="at">scale =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 요약정보 확인</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(pca_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Importance of components:
+                          PC1    PC2    PC3    PC4     PC5     PC6    PC7
+Standard deviation     1.7577 1.6971 1.6575 1.6203 0.31321 0.30182 0.2898
+Proportion of Variance 0.2575 0.2400 0.2289 0.2188 0.00818 0.00759 0.0070
+Cumulative Proportion  0.2575 0.4975 0.7264 0.9452 0.95338 0.96097 0.9680
+                           PC8     PC9    PC10    PC11    PC12
+Standard deviation     0.28833 0.28483 0.27795 0.27237 0.26211
+Proportion of Variance 0.00693 0.00676 0.00644 0.00618 0.00573
+Cumulative Proportion  0.97489 0.98165 0.98809 0.99427 1.00000</code></pre>
+</div>
+</div>
+<table class="table-striped table-hover table">
+<colgroup>
+<col style="width: 40%">
+<col style="width: 60%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">항목</th>
+<th style="text-align: left;">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><strong>Standard deviation</strong></td>
+<td style="text-align: left;">각 주성분(PC)의 표준편차. 고유값의 제곱근이며, 주성분이 담고 있는 분산의 크기와 관련됨</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>Proportion of Variance</strong></td>
+<td style="text-align: left;">해당 주성분이 설명하는 전체 분산의 비율</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>Cumulative Proportion</strong></td>
+<td style="text-align: left;">PC1부터 해당 PC까지 누적하여 설명하는 전체 분산의 비율</td>
+</tr>
+</tbody>
+</table>
+<p><strong>PC1 ~ PC4</strong></p>
+<p><strong>-</strong> PC1의 표준편차는 1.7577이고, 전체 분산의 <strong>25.75%</strong>를 설명한다. <br> <strong>-</strong> PC2는 24.00%, PC3는 22.89%, PC4는 21.88%의 분산을 각각 설명한다. <br> <strong>-</strong> 따라서 PC1~PC4까지 네 개의 주성분만으로 전체 데이터의 **94.52%*를 설명할 수 있다. <br></p>
+<p>이 결과는 매우 이상적이다. 보통 누적설명력이 70~80% 이상이면 우수한 모델로 평가하는데, 여기서는 4개 주성분으로 거의 전체 정보를 설명하고 있다.</p>
+<p><strong>PC5 ~ PC12</strong></p>
+<p><strong>-</strong> PC5 이후의 주성분들은 각각 1% 미만의 분산만을 설명하며, 대부분 고유값이 1보다 작을 것으로 추정된다. <br> <strong>-</strong> 이들은 정보량이 적고 노이즈 수준일 가능성이 높기 때문에 제거해도 된다. <br></p>
+<p>이 데이터는 12개의 고객만족 항목으로 구성되어 있지만, 실제로는 4개의 축만으로 전체 고객 인식의 구조를 거의 완벽하게 설명할 수 있다는 의미다.</p>
+<p>이 4개의 주성분은 예컨대 다음과 같이 명명될 수 있다:</p>
+<p><strong>-</strong> PC1: 직원 응대와 서비스 전반 (예: Q1~Q3) <br> <strong>-</strong> PC2: 음식 품질 (Q4~Q6) <br> <strong>-</strong> PC3: 매장 분위기 (Q7~Q9) <br> <strong>-</strong> PC4: 가격/구성 만족도 (Q10~Q12) <br></p>
+<p>이 경우 전체 설문 문항 수를 12개에서 4개 수준으로 축약하거나, 요약지표로 사용하여 전략적 고객 세분화나 매장 간 비교에 활용할 수 있다.</p>
+<p>그러므로, PC1 ~ PC4만 남기고 PC5 ~ PC12는 제거해도 무방하다. <strong>고유값 기준 (1 이상)</strong>을 만족하는 주성분만 사용하는 것이 바람직하다. 고객설문 축소, 만족도 요인 분석, 핵심지표 설계 등에 매우 유용한 결과이다</p>
+<p>그렇다면, 왜 고유값 기준 1이상의 값만을 주성분으로 사용/유지 하는 것이 좋은가? 위에서 직접 계산한 예제는 공분산 매트릭스를 사용해서 계산했다. 하지만 실제로는 분산/공분산을 표준화한 상관계수를 사용하는 것이 일반적이다. 위에서 설명했듯이, 분산 및 공분산은 변수의 단위에 매우 민감하다. 따라서 변수를 표준화하여 사용하면 이러한 문제를 해결할 수 있다. 변수를 표준화하여 공분산 매트릭스를 만들면 그게 바로 상관계수 매트릭스다. 혹은 상관계수를 직접 구하는 것이 바로 표준화이기도 하다. 따라서, 표준화를 먼저하느냐 나중에 하느냐의 차이일 뿐 동일하다.</p>
+<p>중요한 것은 표준화를 할 경우 각 변수의 수준에서 보면, 표준화란 모든 변수의 값을 해당 변수의 평균값을 빼고 다시 표준편차로 나누어 주는 것이 표준화다. 계산식은 앞쪽의 z-value를 구하는 식과 동일하다. 이렇게하면, 모든 변수가 평균값은 0, 표준편차는 1이된다. 위에서 고유값이 결국 분산이라고 설명했다. 표준화를 할 경우 변수 1개당 분산이 1이 되는데, 주성분분석에서 고유값이 1 보다 작은 값을 주성분으로 사용한다는 것은 쉽게 말해 변수 1개만도 못한 것을 주성분으로 사용한다는 의미가 된다. 따라서 주성분분석의 목적에 맞지 않을 뿐 아니라 매우 비효율적인 결과가 된다. 따라서 기준값 1을 사용하는 이유가 바로 이것이다.</p>
+</section>
+<section id="외식산업에서-고유값-기반-해석이-중요한-이유" class="level3" data-number="8.2.4">
+<h3 data-number="8.2.4" class="anchored" data-anchor-id="외식산업에서-고유값-기반-해석이-중요한-이유"><span class="header-section-number">8.2.4</span> 외식산업에서 고유값 기반 해석이 중요한 이유</h3>
+<p>만약 A 외식 브랜드가 12개의 고객 만족 항목을 측정했는데, PCA 결과에 따르면 PC1과 PC2만으로 전체 분산의 70% 이상을 설명할 수 있다면, 다음과 같은 전략적 판단이 가능하다.</p>
+<p><strong>-</strong> 향후 고객조사 문항을 12개에서 4~5개로 축소할 수 있다. <br> <strong>-</strong> 전체 만족도 점수를 ’서비스’와 ’음식품질’이라는 두 개의 지표로 요약할 수 있다. <br> <strong>-</strong> 내부 KPI 보고서에서 이 두 주성분을 핵심 평가 지표로 사용할 수 있다. <br></p>
+<p>이처럼 PCA는 수학적 계산일 뿐 아니라, 실무적 전략으로도 이어지는 분석이다.</p>
+<p>PCA의 핵심은 고유값과 고유벡터이다. 고유값은 정보를 얼마나 담고 있는지를, 고유벡터는 어떤 방향의 조합이 가장 많은 정보를 담는지를 알려준다. Scree Plot을 통해 적절한 주성분 수를 결정하고, 해석 가능한 구조를 구성하는 것이 PCA의 핵심 실무 능력이다.</p>
+<p>다음 절에서는 이 고유벡터들이 실제로 어떤 변수 조합으로 구성되어 있는지, 즉 주성분과 변수의 관계를 어떻게 해석할 수 있는지를 다룬다.</p>
+</section>
+</section>
+<section id="pca-실행-절차와-분산-설명력" class="level2" data-number="8.3">
+<h2 data-number="8.3" class="anchored" data-anchor-id="pca-실행-절차와-분산-설명력"><span class="header-section-number">8.3</span> PCA 실행 절차와 분산 설명력</h2>
+<p>주성분분석(PCA)은 데이터를 몇 개의 요약된 축(주성분)으로 축소하여 해석할 수 있도록 도와주는 매우 강력한 도구이다. 하지만 이 분석이 정확하게 어떻게 실행되는지는 종종 간과되곤 한다. 이 절에서는 PCA가 수학적으로 어떻게 계산되는지를 외식산업 데이터 예제에 기반하여 하나하나 절차대로 살펴본다.</p>
+<p>PCA는 단순히 버튼 하나 눌러서 결과를 해석하는 도구가 아니다. <strong>표준화 → 공분산행렬 계산 → 고유값 분해 → 주성분 선택</strong>이라는 정확한 절차를 따라야 한다. 이 흐름을 제대로 이해하지 못하면, 분산 설명력도 해석할 수 없고, 축소된 결과도 신뢰할 수 없다.</p>
+<section id="pca의-실행-절차-요약" class="level3" data-number="8.3.1">
+<h3 data-number="8.3.1" class="anchored" data-anchor-id="pca의-실행-절차-요약"><span class="header-section-number">8.3.1</span> PCA의 실행 절차 요약</h3>
+<p>PCA는 다음과 같은 순서로 실행된다.</p>
+<p><strong>1. 데이터 표준화</strong>: 변수들의 단위와 스케일이 다를 경우, 분석 결과가 왜곡되므로 평균 0, 표준편차 1로 정규화한다. <br> <strong>2. 공분산 또는 상관행렬 계산</strong>: 변수 간의 관계를 수치로 요약한 행렬을 만든다. <br> <strong>3. 고유값(eigen value)과 고유벡터(eigen vector) 추출</strong>: 공분산행렬을 분해하여 각 축의 방향(고유벡터)과 설명력(고유값)을 계산한다. <br> <strong>4. 분산 설명력 확인</strong>: 각 주성분이 전체 데이터에서 차지하는 정보량을 해석한다. <br> <strong>5. 주성분 선택 및 시각화</strong>: 고유값 기준 또는 Scree plot을 활용해 몇 개의 주성분을 유지할 것인지 결정한다. <br></p>
+<p>이제 이 과정을 외식산업 실무 데이터로 실제 실행해보자.</p>
+</section>
+<section id="외식-데이터-예제-고객만족도-설문-분석" class="level3" data-number="8.3.2">
+<h3 data-number="8.3.2" class="anchored" data-anchor-id="외식-데이터-예제-고객만족도-설문-분석"><span class="header-section-number">8.3.2</span> 외식 데이터 예제: 고객만족도 설문 분석</h3>
+<p>데이터는 외식 프랜차이즈의 12개 고객만족 항목(Q1~Q12)에 대한 300명의 평가 점수로 구성된다. 각 항목은 1~5점 척도이며, 서비스 품질, 음식 품질, 매장 환경, 가격/구성이라는 4개 잠재요인을 바탕으로 설계되었다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 데이터 불러오기</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/ch7_data1.csv"</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co"># PCA 실행: scale=TRUE는 변수 표준화 수행</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>pca_model <span class="ot">&lt;-</span> <span class="fu">prcomp</span>(data, <span class="at">scale =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 결과 요약</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(pca_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Importance of components:
+                          PC1    PC2    PC3    PC4     PC5     PC6    PC7
+Standard deviation     1.7577 1.6971 1.6575 1.6203 0.31321 0.30182 0.2898
+Proportion of Variance 0.2575 0.2400 0.2289 0.2188 0.00818 0.00759 0.0070
+Cumulative Proportion  0.2575 0.4975 0.7264 0.9452 0.95338 0.96097 0.9680
+                           PC8     PC9    PC10    PC11    PC12
+Standard deviation     0.28833 0.28483 0.27795 0.27237 0.26211
+Proportion of Variance 0.00693 0.00676 0.00644 0.00618 0.00573
+Cumulative Proportion  0.97489 0.98165 0.98809 0.99427 1.00000</code></pre>
+</div>
+</div>
+<p>출력된 결과에서 가장 먼저 볼 수 있는 것은 <strong>Standard deviation, Proportion of Variance, Cumulative Proportion</strong>이다. Standard deviation은 각 주성분이 담고 있는 정보의 양(분산의 제곱근), Proportion은 전체 분산 중 해당 주성분이 차지하는 비율, Cumulative은 누적 분산 설명력을 의미한다.</p>
+</section>
+<section id="분산-설명력을-시각화하기-barplot" class="level3" data-number="8.3.3">
+<h3 data-number="8.3.3" class="anchored" data-anchor-id="분산-설명력을-시각화하기-barplot"><span class="header-section-number">8.3.3</span> 분산 설명력을 시각화하기: Barplot</h3>
+<p>PCA 결과는 수치만으로 해석하기 어려울 수 있다. 이를 시각화한 것이 바로 Scree Plot이다. 아래 코드를 실행하면 각 주성분이 설명하는 분산 비율을 막대그래프로 확인할 수 있다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 고유값 = (주성분의 표준편차)^2</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>eigenvalues <span class="ot">&lt;-</span> pca_model<span class="sc">$</span>sdev<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 고유값을 분산 비율로 변환</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>proportion_var <span class="ot">&lt;-</span> eigenvalues <span class="sc">/</span> <span class="fu">sum</span>(eigenvalues)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 막대그래프 시각화</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="fu">barplot</span>(proportion_var, </span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">main =</span> <span class="st">"PCA 분산 설명력"</span>, </span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">xlab =</span> <span class="st">"주성분"</span>, </span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">ylab =</span> <span class="st">"분산 설명 비율"</span>, </span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">names.arg =</span> <span class="fu">paste0</span>(<span class="st">"PC"</span>, <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(proportion_var)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Chapter8_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>그래프를 보면 처음 몇 개의 주성분이 대부분의 분산을 설명하고, 이후의 주성분들은 정보량이 매우 적음을 알 수 있다. 예를 들어 PC1~PC4까지의 고유값이 전체 분산의 약 94.5%를 설명한다면, 나머지 8개의 주성분은 분석에서 제외해도 무방하다.</p>
+</section>
+<section id="왜-고유값이-중요한가" class="level3" data-number="8.3.4">
+<h3 data-number="8.3.4" class="anchored" data-anchor-id="왜-고유값이-중요한가"><span class="header-section-number">8.3.4</span> 왜 고유값이 중요한가?</h3>
+<p>고유값은 각 주성분이 얼마나 많은 정보를 담고 있는지를 수치적으로 보여준다. 일반적으로 고유값이 1 이상인 주성분만 유지하는 것이 좋다. 왜냐하면, 원래 변수 하나가 평균적으로 1의 분산을 가지고 있다고 보기 때문에, 그보다 작은 고유값을 가진 주성분은 하나의 변수보다도 적은 정보를 담고 있다고 보기 때문이다.</p>
+<p>위와 같은 결과가 나왔다면 이 4개의 주성분만 유지하는 것이 논리적이다. 나머지 주성분들은 해석력을 떨어뜨리고 노이즈를 증가시킬 수 있다.</p>
+</section>
+<section id="실무에서-분산-설명력-해석의-의미" class="level3" data-number="8.3.5">
+<h3 data-number="8.3.5" class="anchored" data-anchor-id="실무에서-분산-설명력-해석의-의미"><span class="header-section-number">8.3.5</span> 실무에서 분산 설명력 해석의 의미</h3>
+<p>만약 외식업체가 내부 고객만족 리포트를 작성한다면, PCA를 통해 도출된 4개의 주성분을 다음과 같이 활용할 수 있다.</p>
+<p><strong>-</strong> 각 매장의 PC1 점수를 구하고, 이 점수를 ’서비스 평가 지표’로 사용 <br> <strong>-</strong> PC2 ~ PC4는 각각 음식 품질, 환경, 가격요인과 연결하여 전략 수립 <br> <strong>-</strong> 본사 내부 KPI로 설정하여 전국 매장 간 비교 및 순위화 가능 <br> <strong>-</strong> 신규 설문지 개발 시 PC1~PC4와 가장 관련이 큰 문항 4개만 추출 <br></p>
+<p>PCA는 단순한 수학적 도구가 아니라, 경영 전략과 연결되는 해석 기반 도구이다.</p>
+<p>PCA를 올바르게 수행하려면 <strong>표준화, 공분산 계산, 고유값 추출의 흐름</strong>을 정확히 이해해야 한다. 특히 분산 설명력의 해석은 분석의 성패를 가르는 핵심 지점이다. 고유값과 누적 설명력을 기준으로 어떤 주성분을 유지하고 어떤 것을 버릴지를 판단하는 능력이 실전에서 매우 중요하다.</p>
+<p>다음 절에서는 PCA 결과로 나온 주성분이 실제 어떤 변수들의 조합으로 구성되어 있는지를 해석하는 방법을 다룬다. 즉, ’주성분이 의미하는 바는 무엇인가?’라는 질문에 대답하는 시간이다.</p>
+</section>
+</section>
+<section id="주성분과-변수의-관계-해석" class="level2" data-number="8.4">
+<h2 data-number="8.4" class="anchored" data-anchor-id="주성분과-변수의-관계-해석"><span class="header-section-number">8.4</span> 주성분과 변수의 관계 해석</h2>
+<p>주성분분석(PCA)은 원래의 변수들을 축약하여 해석 가능한 몇 개의 요약된 축, 즉 주성분(component)으로 변환하는 기법이다. 그런데 여기서 가장 중요한 질문은 “이 주성분이 도대체 어떤 의미인가?”이다. 수학적으로는 계산되었지만, 그 결과가 어떤 변수들과 관련이 있는지를 파악하지 못하면 실무 적용은 불가능하다. 이 절에서는 주성분과 변수 간의 관계를 해석하는 핵심 개념인 <strong>로딩(loadings)</strong>을 중심으로 설명한다.</p>
+<section id="로딩loadings의-개념과-해석-방법" class="level3" data-number="8.4.1">
+<h3 data-number="8.4.1" class="anchored" data-anchor-id="로딩loadings의-개념과-해석-방법"><span class="header-section-number">8.4.1</span> 로딩(loadings)의 개념과 해석 방법</h3>
+<p>주성분 로딩은 <strong>각 변수와 주성분 간의 상관계수</strong>를 나타낸다. 즉, <strong>로딩이 높을수록 해당 변수가 해당 주성분에 많이 기여했다는 뜻</strong>이다. 이를 통해 각 주성분이 어떤 변수들의 조합으로 구성되어 있는지를 해석할 수 있으며, 이는 주성분의 <strong>의미 부여</strong>에 결정적인 역할을 한다.</p>
+</section>
+<section id="외식산업-데이터-예제-고객만족-항목-분석" class="level3" data-number="8.4.2">
+<h3 data-number="8.4.2" class="anchored" data-anchor-id="외식산업-데이터-예제-고객만족-항목-분석"><span class="header-section-number">8.4.2</span> 외식산업 데이터 예제: 고객만족 항목 분석</h3>
+<p>앞서 사용했던 외식프랜차이즈 고객만족도 데이터에 대해 주성분을 실행한 후, 로딩 값을 추출하고 해석해보자.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 주성분 결과에서 로딩 추출</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>loadings <span class="ot">&lt;-</span> pca_model<span class="sc">$</span>rotation</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 상위 4개 주성분에 대한 로딩 출력</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(loadings[, <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>], <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      PC1   PC2   PC3   PC4
+Q1  -0.38  0.03 -0.01  0.43
+Q2  -0.39  0.05 -0.03  0.42
+Q3  -0.38  0.05 -0.02  0.43
+Q4   0.17  0.39 -0.37  0.11
+Q5   0.17  0.40 -0.36  0.10
+Q6   0.18  0.39 -0.37  0.09
+Q7   0.13 -0.41 -0.36  0.14
+Q8   0.12 -0.42 -0.34  0.15
+Q9   0.14 -0.43 -0.34  0.14
+Q10 -0.37 -0.01 -0.26 -0.35
+Q11 -0.37 -0.01 -0.28 -0.34
+Q12 -0.37  0.00 -0.28 -0.34</code></pre>
+</div>
+</div>
+<table class="table-striped table-hover table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 80%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">코드</th>
+<th style="text-align: left;">문항 내용</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Q1</td>
+<td style="text-align: left;">직원이 친절하게 응대했다</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Q2</td>
+<td style="text-align: left;">주문 처리가 신속했다</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Q3</td>
+<td style="text-align: left;">직원이 메뉴에 대해 잘 알고 있었다</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Q4</td>
+<td style="text-align: left;">음식의 맛이 좋았다</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Q5</td>
+<td style="text-align: left;">음식의 양이 적절했다</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Q6</td>
+<td style="text-align: left;">음식이 신선하게 느껴졌다</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Q7</td>
+<td style="text-align: left;">매장이 청결했다</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Q8</td>
+<td style="text-align: left;">조명이 쾌적했다</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Q9</td>
+<td style="text-align: left;">좌석이 편안했다</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Q10</td>
+<td style="text-align: left;">가격이 합리적이었다</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Q11</td>
+<td style="text-align: left;">메뉴 구성이 다양했다</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Q12</td>
+<td style="text-align: left;">전반적인 만족도를 평가하자면?</td>
+</tr>
+</tbody>
+</table>
+<p><strong>PC1의 해석: 서비스 전반의 만족도 요인</strong></p>
+<p><strong>-</strong> Q1, Q2, Q3, Q10, Q11, Q12가 모두 약 -0.37 ~ -0.39 사이의 강한 음의 로딩값을 갖는다. <br> <strong>-</strong> 이 변수들은 서로 유사한 방향으로 주성분에 기여하고 있으며, 서비스 품질, 대기시간, 응대 속도, 전반적 인상 등의 항목일 가능성이 크다. <br> <strong>-</strong> 로딩이 음수라고 해서 부정적인 의미가 아니라, 해당 항목들과 일관된 방향의 축이라는 뜻이다. <br> <strong>-</strong> 따라서 PC1은 전반적 고객경험 또는 핵심 서비스 요인이라는 라벨을 붙일 수 있다. <br></p>
+<p>해석: PC1은 고객 응대의 품질, 대기시간, 전반적인 인상 등 외식업의 기본 서비스 품질 전반을 요약한 주성분이다.</p>
+<p><strong>PC2의 해석: 음식 품질과 관련된 긍정 요인</strong></p>
+<p><strong>-</strong> Q4, Q5, Q6가 약 +0.39 ~ +0.40의 높은 로딩값을 가진다. <br> <strong>-</strong> 반면, Q7, Q8, Q9는 -0.41 ~ -0.43의 강한 음의 로딩값을 보인다. <br> <strong>-</strong> 이는 서로 반대 방향의 성격을 가진 두 그룹의 항목이 PC2 축에서 대립하고 있음을 의미한다. <br></p>
+<p>해석: PC2는 품질 축으로, 음식 품질이 좋을수록 점수가 올라가고, 매장 청결도나 인테리어가 좋을수록 점수가 낮아지는 구조를 갖는다. 즉, 음식품질은 만족스러우나 인테리어에 예민한 고객층과 반대 층을 분리하는 축이다.</p>
+<p><strong>PC3의 해석: 가격 관련 요인 또는 내부 일관성 요인</strong></p>
+<p><strong>-</strong> Q4 ~ Q9는 모두 -0.34 ~ -0.37 사이의 음의 로딩을 갖고 있음. <br> <strong>-</strong> 다만, 로딩값은 PC2보다 약간 낮으며, 변수들의 일관성도 떨어진다. <br> <strong>-</strong> 이 주성분은 음식/인테리어 항목들이 전반적으로 낮은 방향으로 기여하는 축이지만, PC2에 비해 그 뉘앙스는 덜 분명하다. <br> <strong>-</strong> 가능성 1: 세부 품질 평가의 세부 요인 (sub-trait) <br> <strong>-</strong> 가능성 2: 비주류 항목들에 대한 균형 축 <br></p>
+<p>해석: PC3는 인테리어 혹은 분위기와 관련된 보조적 해석 요인 또는 품질 항목들의 세부적 분산 요인으로 볼 수 있으며, 독립적 해석보다는 보조적 시사점으로 활용된다.</p>
+<p><strong>PC4의 해석: 고객 응대 및 응답속도</strong></p>
+<p><strong>-</strong> Q1 ~ Q3는 +0.420.43으로 높은 양의 로딩 <br> <strong>-</strong> Q10 ~ Q12는 -0.34 ~ -0.35로 강한 음의 로딩 <br> <strong>-</strong> 이는 고객응대 관련 항목 간에도 이질적 반응군이 있음을 보여준다 <br></p>
+<p>해석: PC4는 서비스 세부 항목 간 차별성 또는 채널별 서비스 경험 차이를 반영하며, 같은 서비스 항목이라도 대면/비대면, 사전/사후경험에 따라 상반된 반응을 보일 수 있음을 보여준다.</p>
+</section>
+<section id="왜-해석이-애매할까" class="level3" data-number="8.4.3">
+<h3 data-number="8.4.3" class="anchored" data-anchor-id="왜-해석이-애매할까"><span class="header-section-number">8.4.3</span> 왜 해석이 애매할까?</h3>
+<p>원래 Q1~Q12는 3문항씩 4개 영역으로 구성된 이론적 구조를 반영한 설계 기반 설문임에도 불구하고, PCA 결과에서 그것이 선명하게 분리되지 않는다는 것이 핵심 문제다. 아래에 가능한 원인과 해결방안을 단계적으로 분석해 보자.</p>
+<p><strong>문제점</strong></p>
+<p>3문항씩 4개 영역인데 주성분 로딩이 뒤섞여 있다. 원래 예상된 구조는 다음과 같다.</p>
+<p><strong>-</strong> Q1~Q3: 서비스 만족 <br> <strong>-</strong> Q4~Q6: 음식 품질 <br> <strong>-</strong> Q7~Q9: 인테리어 및 분위기 <br> <strong>-</strong> Q10~Q12: 가격 및 전반 만족 <br></p>
+<p>그러나 PCA 결과는 Q1 ~ Q3와 Q10 ~ Q12가 같이 묶이고 (PC1), Q4 ~ Q9가 서로 반대 방향으로 나뉘며 (PC2), 구조가 뒤섞이고 불균형을 보여주고 있다.</p>
+<p><strong>원인 분석</strong></p>
+<p><strong>1. PCA는 공분산 기반 수학적 변환일 뿐 이론적 구조 반영은 아니다</strong> <br></p>
+<p>PCA는 설문 설계자가 의도한 구조를 찾는 분석이 아니다. 단순히 데이터의 분산이 가장 큰 축부터 찾는 방식이기 때문에, 변수 간 실제 분산 구조가 이론과 다르면 뒤섞이는 결과가 나올 수밖에 없다. 즉, PCA는 설계 기반 분석이 아니라 데이터 기반 압축이 목적이다.</p>
+<p><strong>2. 변수 간 상관관계가 비대칭적이거나 강하지 않을 수 있음</strong> <br></p>
+<p>예를 들어 Q1 ~ Q3과 Q10 ~ Q12가 서로 높은 상관을 갖고 있다면, 이들은 같은 주성분으로 묶이고, 반대로 Q7 ~ Q9가 잡음 수준이라면 따로 분리되지 않을 수 있다. 설문 문항 간 <strong>내적 일관성(Cronbach’s α)</strong>이나 상관행렬 시각화 등을 통해 확인 필요하다.</p>
+<p><strong>3. 무작위성이 남아있거나, 표준화 방식이 부적절할 수 있음</strong> <br></p>
+<p>변수 간 분산 규모가 크게 다르면 PCA에서 특정 변수가 과도하게 영향력을 가질 수 있다. 이를 막기 위해 scale = TRUE로 표준화를 하는 것이 일반적이나, 여전히 특정 변수군의 분산 규모가 클 경우 문제가 발생한다.</p>
+<p><strong>해결 방안</strong></p>
+<p><strong>1. 요인분석(Factor Analysis)</strong>로 전환 <br></p>
+<p>만약 이론적으로 영역이 4개임을 전제하고, 이를 검증하고 싶다면 <strong>PCA가 아니라 요인분석(FA)</strong>을 사용해야 한다. 특히 rotate = “varimax” 등을 통해 직교 회전을 통해 해석 가능한 구조를 얻을 수 있다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(psych)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">fa.parallel</span>(data, <span class="at">fa=</span><span class="st">"fa"</span>)  <span class="co"># 적정 요인 수 제안</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in fa.stats(r = r, f = f, phi = phi, n.obs = n.obs, np.obs = np.obs, :
+The estimated weights for the factor scores are probably incorrect.  Try a
+different factor score estimation method.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in fac(r = r, nfactors = nfactors, n.obs = n.obs, rotate = rotate, : An
+ultra-Heywood case was detected.  Examine the results carefully</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in fa.stats(r = r, f = f, phi = phi, n.obs = n.obs, np.obs = np.obs, :
+The estimated weights for the factor scores are probably incorrect.  Try a
+different factor score estimation method.
+Warning in fa.stats(r = r, f = f, phi = phi, n.obs = n.obs, np.obs = np.obs, :
+The estimated weights for the factor scores are probably incorrect.  Try a
+different factor score estimation method.
+Warning in fa.stats(r = r, f = f, phi = phi, n.obs = n.obs, np.obs = np.obs, :
+The estimated weights for the factor scores are probably incorrect.  Try a
+different factor score estimation method.</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Chapter8_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Parallel analysis suggests that the number of factors =  4  and the number of components =  NA </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>fa_result <span class="ot">&lt;-</span> <span class="fu">fa</span>(data, <span class="at">nfactors=</span><span class="dv">4</span>, <span class="at">rotate=</span><span class="st">"varimax"</span>)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fa_result<span class="sc">$</span>loadings)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Loadings:
+    MR1    MR3    MR4    MR2   
+Q1                 0.955       
+Q2                 0.956       
+Q3                 0.959       
+Q4          0.957              
+Q5          0.956              
+Q6          0.961              
+Q7                        0.949
+Q8                        0.952
+Q9                        0.966
+Q10  0.955                     
+Q11  0.957                     
+Q12  0.965                     
+
+                 MR1   MR3   MR4   MR2
+SS loadings    2.765 2.755 2.752 2.741
+Proportion Var 0.230 0.230 0.229 0.228
+Cumulative Var 0.230 0.460 0.689 0.918</code></pre>
+</div>
+</div>
+<p><strong>2. 문항 간 상관계수 확인</strong> <br></p>
+<p>다음 코드를 통해 각 문항 간 상관 구조를 시각화하고, 이론적 영역별로 묶이는지 확인한다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(corrplot)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>cor_matrix <span class="ot">&lt;-</span> <span class="fu">cor</span>(data)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="fu">corrplot</span>(cor_matrix, <span class="at">method=</span><span class="st">"color"</span>, <span class="at">order=</span><span class="st">"hclust"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Chapter8_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>3. 설계 기반 구성타당도 평가: CFA(확인적 요인분석)</strong></p>
+<p>만약 연구자가 사전에 정의한 영역(응대, 품질 등)이 명확하다면, 이를 구조방정식 모형으로 검증하는 것이 좋다. lavaan 패키지를 이용하면 된다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lavaan)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="st">'</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="st">  Service =~ Q1 + Q2 + Q3</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="st">  Quality =~ Q4 + Q5 + Q6</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="st">  Price =~ Q7 + Q8 + Q9</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="st">  Satisfaction =~ Q10 + Q11 + Q12</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="st">'</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">cfa</span>(model, <span class="at">data =</span> data)</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit, <span class="at">fit.measures=</span><span class="cn">TRUE</span>, <span class="at">standardized=</span><span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>lavaan 0.6-19 ended normally after 68 iterations
+
+  Estimator                                         ML
+  Optimization method                           NLMINB
+  Number of model parameters                        30
+
+  Number of observations                           300
+
+Model Test User Model:
+                                                      
+  Test statistic                                23.383
+  Degrees of freedom                                48
+  P-value (Chi-square)                           0.999
+
+Model Test Baseline Model:
+
+  Test statistic                              4761.610
+  Degrees of freedom                                66
+  P-value                                        0.000
+
+User Model versus Baseline Model:
+
+  Comparative Fit Index (CFI)                    1.000
+  Tucker-Lewis Index (TLI)                       1.007
+
+Loglikelihood and Information Criteria:
+
+  Loglikelihood user model (H0)              -2856.028
+  Loglikelihood unrestricted model (H1)      -2844.337
+                                                      
+  Akaike (AIC)                                5772.057
+  Bayesian (BIC)                              5883.170
+  Sample-size adjusted Bayesian (SABIC)       5788.028
+
+Root Mean Square Error of Approximation:
+
+  RMSEA                                          0.000
+  90 Percent confidence interval - lower         0.000
+  90 Percent confidence interval - upper         0.000
+  P-value H_0: RMSEA &lt;= 0.050                    1.000
+  P-value H_0: RMSEA &gt;= 0.080                    0.000
+
+Standardized Root Mean Square Residual:
+
+  SRMR                                           0.014
+
+Parameter Estimates:
+
+  Standard errors                             Standard
+  Information                                 Expected
+  Information saturated (h1) model          Structured
+
+Latent Variables:
+                   Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+  Service =~                                                            
+    Q1                1.000                               0.993    0.955
+    Q2                1.020    0.026   38.511    0.000    1.013    0.958
+    Q3                0.981    0.025   38.859    0.000    0.975    0.959
+  Quality =~                                                            
+    Q4                1.000                               0.948    0.956
+    Q5                1.019    0.026   38.473    0.000    0.966    0.956
+    Q6                1.028    0.026   39.470    0.000    0.975    0.961
+  Price =~                                                              
+    Q7                1.000                               0.983    0.948
+    Q8                1.028    0.029   36.052    0.000    1.010    0.952
+    Q9                1.023    0.027   38.568    0.000    1.005    0.966
+  Satisfaction =~                                                       
+    Q10               1.000                               0.983    0.956
+    Q11               1.007    0.026   38.803    0.000    0.990    0.957
+    Q12               1.052    0.026   40.764    0.000    1.034    0.966
+
+Covariances:
+                   Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+  Service ~~                                                            
+    Quality          -0.027    0.056   -0.474    0.636   -0.028   -0.028
+    Price            -0.032    0.058   -0.546    0.585   -0.033   -0.033
+    Satisfaction      0.072    0.058    1.236    0.216    0.074    0.074
+  Quality ~~                                                            
+    Price            -0.018    0.055   -0.320    0.749   -0.019   -0.019
+    Satisfaction     -0.018    0.055   -0.329    0.742   -0.020   -0.020
+  Price ~~                                                              
+    Satisfaction     -0.012    0.057   -0.216    0.829   -0.013   -0.013
+
+Variances:
+                   Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+   .Q1                0.095    0.012    8.008    0.000    0.095    0.088
+   .Q2                0.093    0.012    7.718    0.000    0.093    0.083
+   .Q3                0.082    0.011    7.507    0.000    0.082    0.079
+   .Q4                0.084    0.011    7.939    0.000    0.084    0.086
+   .Q5                0.087    0.011    7.937    0.000    0.087    0.086
+   .Q6                0.078    0.011    7.345    0.000    0.078    0.076
+   .Q7                0.108    0.013    8.521    0.000    0.108    0.101
+   .Q8                0.106    0.013    8.158    0.000    0.106    0.094
+   .Q9                0.071    0.011    6.376    0.000    0.071    0.066
+   .Q10               0.091    0.011    8.227    0.000    0.091    0.087
+   .Q11               0.090    0.011    8.066    0.000    0.090    0.084
+   .Q12               0.076    0.011    6.869    0.000    0.076    0.066
+    Service           0.986    0.088   11.160    0.000    1.000    1.000
+    Quality           0.899    0.080   11.183    0.000    1.000    1.000
+    Price             0.965    0.088   11.009    0.000    1.000    1.000
+    Satisfaction      0.966    0.086   11.179    0.000    1.000    1.000</code></pre>
+</div>
+</div>
+<table class="table-striped table-hover table">
+<colgroup>
+<col style="width: 21%">
+<col style="width: 29%">
+<col style="width: 49%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">분석 도구</th>
+<th style="text-align: center;">목적</th>
+<th style="text-align: left;">추천 상황</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">PCA</td>
+<td style="text-align: center;">데이터 축소, 패턴 요약</td>
+<td style="text-align: left;">변수 간 구조 미지정일 때</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">요인분석 (FA)</td>
+<td style="text-align: center;">잠재 요인 도출</td>
+<td style="text-align: left;">변수들이 요인에 의해 묶일 것으로 가정할 때</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">CFA</td>
+<td style="text-align: center;">구조 검증</td>
+<td style="text-align: left;">이론적으로 정해진 문항-요인 구조가 있을 때</td>
+</tr>
+</tbody>
+</table>
+<p>이러한 해석은 변수에 대한 사전 도메인 지식과 실무 맥락이 함께 연결될 때 비로소 효과적이다. <strong>로딩은 단지 수학적 상관구조</strong>일 뿐이며, 의미를 부여하는 해석은 <strong>분석자의 해석력과 현장 이해도</strong>가 결정한다. 분석가들이 흔히 빠지는 함정이 바로 이 지점이다. <strong>복잡한 방법론을 사용하기만 하면 무엇이든 해결될 것</strong>이라는 기대가 오히려 분석의 결과를 엉망으로 만들고 잘못된 의사결정을 하도록 하는 원인이 된다. 그래서 분석가는 항상 통계적 방법에 대한 기본적 이해와 그 위험성을 분명하게 알고 있어야 한다.</p>
+</section>
+</section>
+<section id="pca-적합성-검정" class="level2" data-number="8.5">
+<h2 data-number="8.5" class="anchored" data-anchor-id="pca-적합성-검정"><span class="header-section-number">8.5</span> PCA 적합성 검정</h2>
+<p>PCA는 모든 데이터를 무조건 분석한다고 해서 의미 있는 결과가 도출되는 것은 아니다. 변수들 사이에 일정 수준 이상의 상관관계가 존재해야 차원축소가 가능하다. 따라서 PCA 분석을 진행하기 전, 변수 간 상관관계의 구조가 분석에 적합한지를 확인하기 위한 사전검정이 필요하다. 대표적인 검정으로 <strong>KMO(Kaiser-Meyer-Olkin) 측도</strong>와 <strong>Bartlett의 구형성 검정(Bartlett’s Test of Sphericity)</strong>이 있다.</p>
+<section id="왜-적합성-검정이-중요한가" class="level3" data-number="8.5.1">
+<h3 data-number="8.5.1" class="anchored" data-anchor-id="왜-적합성-검정이-중요한가"><span class="header-section-number">8.5.1</span> 왜 적합성 검정이 중요한가</h3>
+<p>외식기업이 고객만족 관련 12개 문항으로 PCA를 통해 주요 요인을 도출하려고 한다고 가정하자. 문항 간 상관이 없다면, 어떤 주성분도 공통된 정보를 대표하지 못하고 단순한 노이즈로 처리된다. 이는 잘못된 결론으로 이어질 수 있다. 예를 들어, 메뉴 만족도, 가격 인식, 서비스 품질, 재방문의도처럼 묶인 문항들이 서로 아무런 관련성이 없다면, PCA로 의미 있는 축을 찾는 것은 통계적으로 무의미해진다.</p>
+</section>
+<section id="kmo-전체-상관행렬이-요인분석에-적합한지-판단" class="level3" data-number="8.5.2">
+<h3 data-number="8.5.2" class="anchored" data-anchor-id="kmo-전체-상관행렬이-요인분석에-적합한지-판단"><span class="header-section-number">8.5.2</span> KMO: 전체 상관행렬이 요인분석에 적합한지 판단</h3>
+<p>KMO는 각 변수의 부분상관(partial correlation)과 총상관을 비교하여, 변수들이 공통된 요인을 형성할 수 있는지를 평가한다. <strong>0.5 미만이면 부적합</strong>, <strong>0.6 이상이면 가능</strong>, <strong>0.8 이상이면 매우 우수</strong>한 수준으로 간주된다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(psych)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">KMO</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Kaiser-Meyer-Olkin factor adequacy
+Call: KMO(r = data)
+Overall MSA =  0.78
+MSA for each item = 
+  Q1   Q2   Q3   Q4   Q5   Q6   Q7   Q8   Q9  Q10  Q11  Q12 
+0.79 0.78 0.78 0.79 0.79 0.78 0.80 0.79 0.75 0.80 0.79 0.77 </code></pre>
+</div>
+</div>
+<p>예제 데이터에 대해 KMO를 적용하면 위와 같은 결과를 얻을 수 있다. Overall MSA = 0.78이었다. 이는 변수 간에 충분한 상관성이 존재하며, 요인 도출(PCA 포함)이 통계적으로 가능함을 의미한다. 특히 외식산업에서는 고객 만족 문항이 서로 유사한 구조를 갖는 경우가 많아, 일반적으로 KMO 값은 높게 나오는 경향이 있다.</p>
+</section>
+<section id="bartlett의-구형성-검정-상관행렬이-단위행렬인지-여부" class="level3" data-number="8.5.3">
+<h3 data-number="8.5.3" class="anchored" data-anchor-id="bartlett의-구형성-검정-상관행렬이-단위행렬인지-여부"><span class="header-section-number">8.5.3</span> Bartlett의 구형성 검정: 상관행렬이 단위행렬인지 여부</h3>
+<p>이 검정은 <strong>전체 상관행렬이 단위행렬(identity matrix)</strong>인지, 즉 모든 변수들이 서로 무관한지를 평가한다. 귀무가설은 ’변수 간 상관이 없다’이며, 유의확률(p값)이 0.05보다 작으면 귀무가설을 기각할 수 있다. 즉, 상관관계가 존재하여 PCA를 적용할 수 있다는 의미다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cortest.bartlett</span>(<span class="fu">cor</span>(data), <span class="at">n=</span><span class="fu">nrow</span>(data))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$chisq
+[1] 4669.023
+
+$p.value
+[1] 0
+
+$df
+[1] 66</code></pre>
+</div>
+</div>
+<p>Bartlett 검정의 p-value가 매우 작고 유의하므로, 변수 간에 상관관계가 존재하며, PCA나 요인분석을 적용하기에 적절한 데이터 구조임을 알 수 있다.</p>
+</section>
+<section id="분석-시-유의점" class="level3" data-number="8.5.4">
+<h3 data-number="8.5.4" class="anchored" data-anchor-id="분석-시-유의점"><span class="header-section-number">8.5.4</span> 분석 시 유의점</h3>
+<p>KMO가 높고 Bartlett 검정이 유의하더라도, 모든 변수가 동일한 요인으로 묶인다는 보장은 없다. 실질적 해석력을 확보하려면 이후 단계에서 요인수 선택, 회전 방법, 구성타당도 평가 등도 반드시 병행되어야 한다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># PCA 적용 이후 주성분 로딩 확인</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>pca_model <span class="ot">&lt;-</span> <span class="fu">prcomp</span>(data, <span class="at">scale=</span><span class="cn">TRUE</span>)</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(pca_model<span class="sc">$</span>rotation[,<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>           PC1          PC2         PC3        PC4
+Q1  -0.3825134  0.029431327 -0.01049161  0.4316486
+Q2  -0.3927439  0.053423749 -0.02953139  0.4177407
+Q3  -0.3826404  0.048016707 -0.02305996  0.4300754
+Q4   0.1723329  0.388751770 -0.37493556  0.1091525
+Q5   0.1729545  0.401221966 -0.36415460  0.0951621
+Q6   0.1781559  0.392779681 -0.37285229  0.0933838
+Q7   0.1250788 -0.409087587 -0.36019693  0.1399629
+Q8   0.1240595 -0.423023435 -0.33991008  0.1509291
+Q9   0.1402433 -0.425597713 -0.33958068  0.1386246
+Q10 -0.3700693 -0.006843171 -0.26434912 -0.3545405
+Q11 -0.3678625 -0.009658824 -0.28110873 -0.3439370
+Q12 -0.3724150 -0.004024796 -0.27709869 -0.3448754</code></pre>
+</div>
+</div>
+<p>이를 통해 주요 주성분이 어떤 변수들과 연관되는지를 해석하고, 실제 외식 실무에서 어떤 전략적 시사점을 도출할 수 있는지를 살펴보아야 한다.</p>
+<p>PCA는 단순한 통계적 분석이 아니라, <strong>데이터 구조의 품질</strong>에 대한 사전 점검을 반드시 필요로 한다. 외식산업의 복잡한 소비자 만족 데이터에서 PCA를 사용하기 위해서는, <strong>KMO가 0.6 이상</strong>이고 <strong>Bartlett 검정이 유의</strong>한 경우에만 해석을 시도해야 한다. 그렇지 않으면 잘못된 축에 의한 <strong>해석 오류</strong>가 발생할 수 있으며, 이는 실제 전략 수립에 오히려 해를 끼치게 된다.</p>
+</section>
+</section>
+<section id="pca의-활용과-한계" class="level2" data-number="8.6">
+<h2 data-number="8.6" class="anchored" data-anchor-id="pca의-활용과-한계"><span class="header-section-number">8.6</span> PCA의 활용과 한계</h2>
+<p>주성분분석(PCA)은 <strong>고차원 데이터를 저차원으로 요약</strong>하여 핵심 패턴을 파악하는 데 매우 효과적인 도구이다. 특히 변수 간 중복 정보가 많고 상관성이 높을 때, <strong>PCA는 데이터의 구조를 간결하게 정리하고 시각화</strong>하며, 모델 성능을 개선하는 데 기여할 수 있다. 하지만 이 분석기법에도 명백한 한계가 존재한다. <strong>모든 통계기법은 목적에 따라 적절한 사용이 요구되며, PCA도 예외가 아니다.</strong></p>
+<section id="pca의-대표적-활용-분야" class="level3" data-number="8.6.1">
+<h3 data-number="8.6.1" class="anchored" data-anchor-id="pca의-대표적-활용-분야"><span class="header-section-number">8.6.1</span> PCA의 대표적 활용 분야</h3>
+<p><strong>1. 고객 세분화</strong></p>
+<p>외식산업에서는 다양한 만족도 항목, 소비 패턴, 방문 빈도 등의 데이터를 수집하지만, 변수 간 중복이 많아 인사이트 도출이 어렵다. PCA를 활용하면 이러한 변수들을 요약하여 핵심 소비자 유형을 추출할 수 있다. 예를 들어, 서비스 품질, 가격 만족도, 재방문 의도 등이 하나의 주성분으로 묶이면, 이 축을 기준으로 고객을 세분화할 수 있다.</p>
+<p><strong>2. 시각화와 클러스터링 전처리</strong></p>
+<p>고객 설문 데이터를 2~3개의 주성분으로 축소하면, 클러스터링이나 시각화에 매우 용이하다. 특히 t-SNE나 UMAP 같은 비선형 차원축소 기법 이전에 PCA로 전처리를 수행하면, <strong>노이즈 제거와 계산 속도 향상</strong>에 도움이 된다.</p>
+<p><strong>3. 예측모형의 입력변수 축소</strong></p>
+<p>고차원 회귀나 로지스틱 회귀 모델에 PCA를 적용하면, 예측변수 간 다중공선성을 줄이고 성능을 향상시킬 수 있다. 특히 머신러닝에서 PCA는 과적합을 방지하는 전처리 기법으로 자주 사용된다. 여기서 한 가지 알아야 하는 사실은 주성분분석을 하면 주성분과 주성분은 직교 (90도)하도록 되어 있는데, 통계적으로 두 축 즉, 두 개념이 직교한다는 것은 상호간에 상관관계가 0이 된다는 의미이다. 따라서 주성분분석으로 뽑아낸 주성분으로 회귀분석을 하면 다중공선성 문제가 발생할 수 없는 것이다.</p>
+<p><strong>4. 매장 운영의 품질 지표 통합</strong></p>
+<p>예를 들어, 음식 온도, 조리시간, 테이블 회전율, 고객 대기시간 등 매장 품질 관련 지표들을 PCA로 요약하면, 운영상 효율성이라는 하나의 주성분 지표를 만들 수 있다. 이를 KPI로 활용하면 의사결정이 간결해진다.</p>
+</section>
+<section id="pca의-근본적-한계" class="level3" data-number="8.6.2">
+<h3 data-number="8.6.2" class="anchored" data-anchor-id="pca의-근본적-한계"><span class="header-section-number">8.6.2</span> PCA의 근본적 한계</h3>
+<p><strong>1. 해석력의 문제</strong></p>
+<p>PCA의 가장 큰 약점은 <strong>통계적으로 유의한 주성분이 실제 의미 있는 개념과 항상 일치하지 않는다는 점</strong>이다. 변수 간 상관관계에 기반한 수학적 구성일 뿐, 분석자가 직관적으로 이해할 수 있는 의미 있는 묶음이 아닐 수 있다.</p>
+<p><strong>2. 정보 손실의 불가피성</strong></p>
+<p>PCA는 필연적으로 일부 분산을 버리게 된다. 주성분을 3개만 선택하면, 나머지 분산은 해석 대상에서 제외된다. 문제는 이 잔여 분산 속에 중요한 정보가 포함되어 있을 수 있다는 점이다. 특히 <strong>데이터가 비선형 구조를 가질 때</strong> PCA는 그 구조를 제대로 포착하지 못한다.</p>
+<p><strong>3. 비지도학습의 한계</strong><br>
+PCA는 레이블 없는 데이터를 기반으로 작동하기 때문에, 무엇이 중요한지를 판단하는 기준이 오직 <strong>분산 크기</strong>이다. 하지만 실제 예측문제에서는 분산이 크다고 해서 항상 유용한 변수는 아니다. 경우에 따라 중요한 변수는 매우 적은 분산을 보일 수도 있다.</p>
+</section>
+<section id="비판적-사고-문제-분산-10라도-버려도-되는가" class="level3" data-number="8.6.3">
+<h3 data-number="8.6.3" class="anchored" data-anchor-id="비판적-사고-문제-분산-10라도-버려도-되는가"><span class="header-section-number">8.6.3</span> 비판적 사고 문제: “분산 10%라도 버려도 되는가?”</h3>
+<p>많은 교과서와 분석가는 <strong>설명된 분산이 90% 이상이면 분석이 충분하다</strong>고 이야기한다. 하지만 이는 과연 정당한가?</p>
+<p><strong>예시 시나리오</strong></p>
+<p>한 프랜차이즈 브랜드가 전국 200개 매장의 운영 데이터를 바탕으로 PCA를 실시한 결과, 첫 3개의 주성분이 전체 분산의 90%를 설명하였다. 그러나 나머지 10%에는 몇몇 특정 지역에서만 발생하는 <strong>이례적인 리스크</strong>나 <strong>고객 불만 패턴</strong>이 포함되어 있었다.</p>
+<p>이 정보를 버리고 주요 3개 주성분만으로 마케팅 전략을 설계하면, 전국 단위에서는 효과적일 수 있지만, <strong>예외적 지역에서는 치명적인 전략 실패</strong>로 이어질 수 있다. 즉, <strong>10%라도 중요한 정보가 될 수 있다.</strong></p>
+<p>분산의 크기는 중요하나, 분석의 목적에 따라 이 “잔여 분산”이 더 중요할 수도 있다는 점을 항상 유념해야 한다.</p>
+</section>
+<section id="정리-및-시사점" class="level3" data-number="8.6.4">
+<h3 data-number="8.6.4" class="anchored" data-anchor-id="정리-및-시사점"><span class="header-section-number">8.6.4</span> 정리 및 시사점</h3>
+<table class="table-striped table-hover table">
+<colgroup>
+<col style="width: 30%">
+<col style="width: 35%">
+<col style="width: 35%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">항목</th>
+<th style="text-align: left;">장점</th>
+<th style="text-align: left;">한계</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">데이터 요약</td>
+<td style="text-align: left;">다차원 변수 압축</td>
+<td style="text-align: left;">해석 어려움</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">시각화 전처리</td>
+<td style="text-align: left;">계산량 절감, 노이즈 제거</td>
+<td style="text-align: left;">비선형 구조 대응 불가</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">예측 변수 축소</td>
+<td style="text-align: left;">다중공선성 해결</td>
+<td style="text-align: left;">예측 목적과의 불일치</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">정보 손실</td>
+<td style="text-align: left;">분산 기준으로 요약</td>
+<td style="text-align: left;">중요 정보 누락 가능성</td>
+</tr>
+</tbody>
+</table>
+<p>PCA는 매우 강력한 도구이지만, 그 자체가 해답은 아니다. 분석가는 <strong>PCA로 얻은 요약 정보와 잃어버린 정보의 가치</strong>를 비교하고, 전체 분석의 목적에 따라 언제, 어떻게 이 도구를 사용할지 판단해야 한다.</p>
+<p><strong>정보의 요약은 곧 책임의 생략이다.</strong> 통계적 편의성과 실무적 신중함 사이에서 균형 잡힌 분석자의 자세가 필요하다.</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      return note.innerHTML;
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./Chapter7.html" class="pagination-link  aria-label=" &lt;span="" 매개효과&lt;="" span&gt;"="">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">조절효과와 매개효과</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./Chapter9.html" class="pagination-link" aria-label="<span class='chapter-number'>9</span>&nbsp; <span class='chapter-title'>요인분석</span>">
+        <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">요인분석</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

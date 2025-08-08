@@ -1,0 +1,1678 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.531">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>비즈니스 애널리틱스 (Business Analytics) - 7&nbsp; 조절효과와 매개효과</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./Chapter8.html" rel="next">
+<link href="./Chapter6.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./Chapter7.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">조절효과와 매개효과</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">비즈니스 애널리틱스 (Business Analytics)</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Chapter1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">오리엔테이션</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Chapter2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">통계학의 본질과 변수의 이해</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Chapter3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">기술통계와 요약</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Chapter4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">일원배치 분산분석</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Chapter5.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">이원배치 분산분석</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Chapter6.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">회귀분석: 통계의 꽃</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Chapter7.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">조절효과와 매개효과</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Chapter8.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">차원축소와 주성분 분석</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Chapter9.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">요인분석</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Chapter10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">계층적 군집분석</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Chapter11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">k-평균 군집분석</span></span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#변수-간-관계의-확장-단순-회귀의-한계" id="toc-변수-간-관계의-확장-단순-회귀의-한계" class="nav-link active" data-scroll-target="#변수-간-관계의-확장-단순-회귀의-한계"><span class="header-section-number">7.1</span> 변수 간 관계의 확장: 단순 회귀의 한계</a>
+  <ul class="collapse">
+  <li><a href="#단순-회귀의-가정과-한계" id="toc-단순-회귀의-가정과-한계" class="nav-link" data-scroll-target="#단순-회귀의-가정과-한계"><span class="header-section-number">7.1.1</span> 단순 회귀의 가정과 한계</a></li>
+  <li><a href="#관계의-조건부-변화-조절효과의-전조" id="toc-관계의-조건부-변화-조절효과의-전조" class="nav-link" data-scroll-target="#관계의-조건부-변화-조절효과의-전조"><span class="header-section-number">7.1.2</span> 관계의 조건부 변화: 조절효과의 전조</a></li>
+  <li><a href="#관계의-중간-경로-매개효과의-도입" id="toc-관계의-중간-경로-매개효과의-도입" class="nav-link" data-scroll-target="#관계의-중간-경로-매개효과의-도입"><span class="header-section-number">7.1.3</span> 관계의 중간 경로: 매개효과의 도입</a></li>
+  <li><a href="#단순-회귀를-넘어서는-이유-전략적-통찰" id="toc-단순-회귀를-넘어서는-이유-전략적-통찰" class="nav-link" data-scroll-target="#단순-회귀를-넘어서는-이유-전략적-통찰"><span class="header-section-number">7.1.4</span> 단순 회귀를 넘어서는 이유: 전략적 통찰</a></li>
+  </ul></li>
+  <li><a href="#조절효과란-무엇인가-interaction-term의-이해" id="toc-조절효과란-무엇인가-interaction-term의-이해" class="nav-link" data-scroll-target="#조절효과란-무엇인가-interaction-term의-이해"><span class="header-section-number">7.2</span> 조절효과란 무엇인가?: Interaction Term의 이해</a>
+  <ul class="collapse">
+  <li><a href="#관계가-항상-일정할까" id="toc-관계가-항상-일정할까" class="nav-link" data-scroll-target="#관계가-항상-일정할까"><span class="header-section-number">7.2.1</span> 관계가 항상 일정할까?</a></li>
+  <li><a href="#조절효과의-개념적-구조" id="toc-조절효과의-개념적-구조" class="nav-link" data-scroll-target="#조절효과의-개념적-구조"><span class="header-section-number">7.2.2</span> 조절효과의 개념적 구조</a></li>
+  <li><a href="#외식산업-예제-광고-효과는-연령에-따라-다를까" id="toc-외식산업-예제-광고-효과는-연령에-따라-다를까" class="nav-link" data-scroll-target="#외식산업-예제-광고-효과는-연령에-따라-다를까"><span class="header-section-number">7.2.3</span> 외식산업 예제: 광고 효과는 연령에 따라 다를까?</a></li>
+  <li><a href="#시각화를-통한-조절효과-해석" id="toc-시각화를-통한-조절효과-해석" class="nav-link" data-scroll-target="#시각화를-통한-조절효과-해석"><span class="header-section-number">7.2.4</span> 시각화를 통한 조절효과 해석</a></li>
+  <li><a href="#범주형-조절변수의-해석" id="toc-범주형-조절변수의-해석" class="nav-link" data-scroll-target="#범주형-조절변수의-해석"><span class="header-section-number">7.2.5</span> 범주형 조절변수의 해석</a></li>
+  <li><a href="#조절효과를-사용할-때-유의할-점" id="toc-조절효과를-사용할-때-유의할-점" class="nav-link" data-scroll-target="#조절효과를-사용할-때-유의할-점"><span class="header-section-number">7.2.6</span> 조절효과를 사용할 때 유의할 점</a></li>
+  </ul></li>
+  <li><a href="#매개효과란-무엇인가-mediation의-개념과-경로분석" id="toc-매개효과란-무엇인가-mediation의-개념과-경로분석" class="nav-link" data-scroll-target="#매개효과란-무엇인가-mediation의-개념과-경로분석"><span class="header-section-number">7.3</span> 매개효과란 무엇인가?: Mediation의 개념과 경로분석</a>
+  <ul class="collapse">
+  <li><a href="#겉으로-보이는-관계-너머를-탐색하기" id="toc-겉으로-보이는-관계-너머를-탐색하기" class="nav-link" data-scroll-target="#겉으로-보이는-관계-너머를-탐색하기"><span class="header-section-number">7.3.1</span> 겉으로 보이는 관계 너머를 탐색하기</a></li>
+  <li><a href="#매개효과의-기본-구조" id="toc-매개효과의-기본-구조" class="nav-link" data-scroll-target="#매개효과의-기본-구조"><span class="header-section-number">7.3.2</span> 매개효과의 기본 구조</a></li>
+  <li><a href="#외식산업-예제-광고-태도-매출" id="toc-외식산업-예제-광고-태도-매출" class="nav-link" data-scroll-target="#외식산업-예제-광고-태도-매출"><span class="header-section-number">7.3.3</span> 외식산업 예제: 광고 → 태도 → 매출</a></li>
+  <li><a href="#baron-kenny의-전통적-접근" id="toc-baron-kenny의-전통적-접근" class="nav-link" data-scroll-target="#baron-kenny의-전통적-접근"><span class="header-section-number">7.3.4</span> Baron &amp; Kenny의 전통적 접근</a></li>
+  <li><a href="#소벨-테스트로-간접효과-유의성-검정하기" id="toc-소벨-테스트로-간접효과-유의성-검정하기" class="nav-link" data-scroll-target="#소벨-테스트로-간접효과-유의성-검정하기"><span class="header-section-number">7.3.5</span> 소벨 테스트로 간접효과 유의성 검정하기</a></li>
+  <li><a href="#process-모델과-bootstrapping" id="toc-process-모델과-bootstrapping" class="nav-link" data-scroll-target="#process-모델과-bootstrapping"><span class="header-section-number">7.3.6</span> PROCESS 모델과 Bootstrapping</a></li>
+  <li><a href="#시각화를-통한-매개모형-해석" id="toc-시각화를-통한-매개모형-해석" class="nav-link" data-scroll-target="#시각화를-통한-매개모형-해석"><span class="header-section-number">7.3.7</span> 시각화를 통한 매개모형 해석</a></li>
+  <li><a href="#간접효과의-유의성-왜-bootstrapping이-중요한가" id="toc-간접효과의-유의성-왜-bootstrapping이-중요한가" class="nav-link" data-scroll-target="#간접효과의-유의성-왜-bootstrapping이-중요한가"><span class="header-section-number">7.3.8</span> 간접효과의 유의성: 왜 bootstrapping이 중요한가?</a></li>
+  <li><a href="#현실-적용-외식-마케팅-전략에서-매개효과-활용" id="toc-현실-적용-외식-마케팅-전략에서-매개효과-활용" class="nav-link" data-scroll-target="#현실-적용-외식-마케팅-전략에서-매개효과-활용"><span class="header-section-number">7.3.9</span> 현실 적용: 외식 마케팅 전략에서 매개효과 활용</a></li>
+  </ul></li>
+  <li><a href="#조절-vs-매개-구분과-혼합모형" id="toc-조절-vs-매개-구분과-혼합모형" class="nav-link" data-scroll-target="#조절-vs-매개-구분과-혼합모형"><span class="header-section-number">7.4</span> 조절 vs 매개: 구분과 혼합모형</a>
+  <ul class="collapse">
+  <li><a href="#왜-조절과-매개를-구분해야-할까" id="toc-왜-조절과-매개를-구분해야-할까" class="nav-link" data-scroll-target="#왜-조절과-매개를-구분해야-할까"><span class="header-section-number">7.4.1</span> 왜 ’조절’과 ’매개’를 구분해야 할까?</a></li>
+  <li><a href="#기본-구조의-시각적-비교" id="toc-기본-구조의-시각적-비교" class="nav-link" data-scroll-target="#기본-구조의-시각적-비교"><span class="header-section-number">7.4.2</span> 기본 구조의 시각적 비교</a></li>
+  <li><a href="#조절된-매개moderated-mediation란-무엇인가" id="toc-조절된-매개moderated-mediation란-무엇인가" class="nav-link" data-scroll-target="#조절된-매개moderated-mediation란-무엇인가"><span class="header-section-number">7.4.3</span> 조절된 매개(Moderated Mediation)란 무엇인가?</a></li>
+  <li><a href="#매개된-조절mediated-moderation-구조는-어떤가" id="toc-매개된-조절mediated-moderation-구조는-어떤가" class="nav-link" data-scroll-target="#매개된-조절mediated-moderation-구조는-어떤가"><span class="header-section-number">7.4.4</span> 매개된 조절(Mediated Moderation) 구조는 어떤가?</a></li>
+  <li><a href="#해석상의-주의점" id="toc-해석상의-주의점" class="nav-link" data-scroll-target="#해석상의-주의점"><span class="header-section-number">7.4.5</span> 해석상의 주의점</a></li>
+  <li><a href="#조절된-매개모형의-실습" id="toc-조절된-매개모형의-실습" class="nav-link" data-scroll-target="#조절된-매개모형의-실습"><span class="header-section-number">7.4.6</span> 조절된 매개모형의 실습</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">조절효과와 매개효과</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="변수-간-관계의-확장-단순-회귀의-한계" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="변수-간-관계의-확장-단순-회귀의-한계"><span class="header-section-number">7.1</span> 변수 간 관계의 확장: 단순 회귀의 한계</h2>
+<section id="단순-회귀의-가정과-한계" class="level3" data-number="7.1.1">
+<h3 data-number="7.1.1" class="anchored" data-anchor-id="단순-회귀의-가정과-한계"><span class="header-section-number">7.1.1</span> 단순 회귀의 가정과 한계</h3>
+<p>회귀분석의 기본 형태인 단순 선형 회귀는 하나의 독립변수가 종속변수에 미치는 영향을 직선의 형태로 설명한다. 예를 들어, 한 외식 브랜드가 고객에게 광고를 얼마나 많이 노출했는지가 그 고객의 구매금액에 어떤 영향을 주는지를 분석하고자 할 때, 다음과 같은 단순 회귀모형을 사용할 수 있다.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>model_simple &lt;- lm(purchase_amount ~ ad_exposure, data = df)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>summary(model_simple)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>이 모형은 광고노출(ad_exposure)이 증가할수록 구매금액(purchase_amount)이 일정한 비율로 증가하거나 감소한다고 가정한다. 이때 <strong>회귀계수는 평균적인 효과</strong>를 나타내며, <strong>모든 고객에게 동일하게 적용된다고 전제</strong>한다.</p>
+<p>하지만 현실은 그렇게 단순하지 않다. 외식소비자는 다양한 연령대, 직업, 소비 성향을 가지고 있고, 이질적인 반응을 보인다. 예를 들어, 20대는 인스타그램 광고에 반응할 수 있지만, 60대는 종이전단이나 오프라인 쿠폰에 더 반응할 수도 있다. 이런 이질성을 반영하지 않는 단순 회귀는 <strong>평균적인 효과</strong>만을 보여줄 뿐, ‘누가 더 많이 반응하는가’, ‘어떤 조건에서 효과가 강해지는가’ 같은 중요한 질문에 답하지 못한다.</p>
+</section>
+<section id="관계의-조건부-변화-조절효과의-전조" class="level3" data-number="7.1.2">
+<h3 data-number="7.1.2" class="anchored" data-anchor-id="관계의-조건부-변화-조절효과의-전조"><span class="header-section-number">7.1.2</span> 관계의 조건부 변화: 조절효과의 전조</h3>
+<p>다음과 같은 질문을 던져보자.</p>
+<p><strong>-</strong> 광고노출이 매출에 미치는 영향은 모든 고객에게 동일한가? <br> <strong>-</strong> 젊은 고객은 광고에 더 민감하게 반응하지 않을까? <br> <strong>-</strong> 매장 방문 빈도가 높은 고객은 광고 효과가 작지 않을까? <br></p>
+<p>이 질문들의 핵심에는 <strong>조건부 효과</strong>라는 개념이 숨어 있다. 다시 말해, 광고노출과 매출 간의 관계가 어떤 제3의 변수(예: 연령, 성별, 방문빈도)에 따라 달라질 수 있다는 것이다. 이러한 현상을 <strong>조절효과(moderation effect)</strong>라고 부르며, 이후에 자세히 설명한다.</p>
+<p>다음은 단순 회귀모형이 설명하지 못하는 조절효과의 가능성을 시각적으로 보여주는 예이다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 필요한 패키지 로드</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 가상 데이터 생성</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">300</span>  <span class="co"># 관측치 수</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">age_group =</span> <span class="fu">sample</span>(<span class="fu">c</span>(<span class="st">"20s"</span>, <span class="st">"30s"</span>, <span class="st">"40s"</span>, <span class="st">"50s+"</span>), n, <span class="at">replace =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">ad_exposure =</span> <span class="fu">rpois</span>(n, <span class="at">lambda =</span> <span class="dv">5</span>)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">age_numeric =</span> <span class="fu">case_when</span>(</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>      age_group <span class="sc">==</span> <span class="st">"20s"</span> <span class="sc">~</span> <span class="dv">25</span>,</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>      age_group <span class="sc">==</span> <span class="st">"30s"</span> <span class="sc">~</span> <span class="dv">35</span>,</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>      age_group <span class="sc">==</span> <span class="st">"40s"</span> <span class="sc">~</span> <span class="dv">45</span>,</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>      age_group <span class="sc">==</span> <span class="st">"50s+"</span> <span class="sc">~</span> <span class="dv">60</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 연령대별로 광고효과의 민감도 차이를 반영</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">purchase_amount =</span> <span class="fu">case_when</span>(</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>      age_group <span class="sc">==</span> <span class="st">"20s"</span> <span class="sc">~</span> <span class="dv">20</span> <span class="sc">+</span> <span class="dv">4</span> <span class="sc">*</span> ad_exposure <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="dv">5</span>),</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>      age_group <span class="sc">==</span> <span class="st">"30s"</span> <span class="sc">~</span> <span class="dv">20</span> <span class="sc">+</span> <span class="dv">3</span> <span class="sc">*</span> ad_exposure <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="dv">6</span>),</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>      age_group <span class="sc">==</span> <span class="st">"40s"</span> <span class="sc">~</span> <span class="dv">20</span> <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> ad_exposure <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="dv">7</span>),</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>      age_group <span class="sc">==</span> <span class="st">"50s+"</span> <span class="sc">~</span> <span class="dv">20</span> <span class="sc">+</span> <span class="dv">1</span> <span class="sc">*</span> ad_exposure <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="dv">8</span>)</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">x =</span> ad_exposure, <span class="at">y =</span> purchase_amount, <span class="at">color =</span> age_group)) <span class="sc">+</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"광고노출과 매출 간 관계 (연령대별 차이)"</span>,</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"광고 노출 횟수"</span>,</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"구매 금액"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Chapter7_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>위 그래프를 보면, 광고노출이 증가할수록 매출이 증가하는 경향은 있지만, 그 <strong>기울기(효과의 크기)는 연령대별로 달라질 수 있다.</strong> 즉, 광고 효과는 연령대에 따라 조절된다는 가설을 세울 수 있다.</p>
+</section>
+<section id="관계의-중간-경로-매개효과의-도입" class="level3" data-number="7.1.3">
+<h3 data-number="7.1.3" class="anchored" data-anchor-id="관계의-중간-경로-매개효과의-도입"><span class="header-section-number">7.1.3</span> 관계의 중간 경로: 매개효과의 도입</h3>
+<p>또 하나의 중요한 확장 개념은 <strong>매개효과(mediation effect)</strong>다. 어떤 독립변수가 종속변수에 영향을 줄 때, 그 영향이 직접적일 수도 있지만, 중간 변수를 통해 간접적으로 작용할 수도 있다.</p>
+<p>예를 들어, 외식 프랜차이즈에서 진행한 광고 캠페인이 바로 매출을 올렸다고 가정하는 것은 지나치게 단순한 해석이다. 실제로는 광고를 통해 고객의 브랜드 인식(태도)이 먼저 변화하고, 그 변화된 태도가 다시 구매 행동에 영향을 미쳤을 수 있다.</p>
+<p>이를 식으로 표현하면 다음과 같다.</p>
+<p><strong>광고노출</strong> <span class="math inline">\(\rightarrow\)</span> <strong>브랜드 태도</strong> <span class="math inline">\(\rightarrow\)</span> <strong>매출</strong></p>
+<p>여기서 브랜드 태도가 <strong>매개변수(mediator)</strong>이며, 전체 효과는 다음과 같이 나뉜다.</p>
+<p><strong>-</strong> 직접효과: 광고 <span class="math inline">\(\rightarrow\)</span> 매출 <br> <strong>-</strong> 간접효과: 광고 <span class="math inline">\(\rightarrow\)</span> 브랜드 태도 <span class="math inline">\(\rightarrow\)</span> 매출 <br></p>
+<p>다음은 R 코드로 이 매개경로를 구성하고 시각화하는 간단한 예시이다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">300</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">ad_exposure =</span> <span class="fu">rpois</span>(n, <span class="at">lambda =</span> <span class="dv">5</span>),   <span class="co"># 광고노출 빈도</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">attitude =</span> <span class="cn">NA_real_</span>,                 <span class="co"># 태도 변수 (미리 NA로 생성)</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">purchase_amount =</span> <span class="cn">NA_real_</span>           <span class="co"># 최종 구매금액</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 광고노출이 브랜드 태도에 영향을 주고</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">attitude =</span> <span class="dv">3</span> <span class="sc">+</span> <span class="fl">0.8</span> <span class="sc">*</span> ad_exposure <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="dv">1</span>),   <span class="co"># 평균 3, 광고 영향 0.8</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">purchase_amount =</span> <span class="dv">10</span> <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> attitude <span class="sc">+</span> <span class="fl">0.3</span> <span class="sc">*</span> ad_exposure <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="dv">2</span>)  <span class="co"># attitude가 주요 경로</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lavaan)</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="co"># 매개모형 명시</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>model_mediation <span class="ot">&lt;-</span> <span class="st">'</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="st">  attitude ~ a * ad_exposure</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="st">  purchase_amount ~ b * attitude + c_prime * ad_exposure</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="st">  indirect := a * b</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="st">  total := c_prime + (a * b)</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a><span class="st">'</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a><span class="co"># 분석 수행</span></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">sem</span>(model_mediation, <span class="at">data =</span> df, <span class="at">se =</span> <span class="st">"bootstrap"</span>, <span class="at">bootstrap =</span> <span class="dv">1000</span>)</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a><span class="co"># 결과 요약</span></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit, <span class="at">standardized =</span> <span class="cn">TRUE</span>, <span class="at">fit.measures =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>lavaan 0.6-19 ended normally after 1 iteration
+
+  Estimator                                         ML
+  Optimization method                           NLMINB
+  Number of model parameters                         5
+
+  Number of observations                           300
+
+Model Test User Model:
+                                                      
+  Test statistic                                 0.000
+  Degrees of freedom                                 0
+
+Model Test Baseline Model:
+
+  Test statistic                               958.936
+  Degrees of freedom                                 3
+  P-value                                        0.000
+
+User Model versus Baseline Model:
+
+  Comparative Fit Index (CFI)                    1.000
+  Tucker-Lewis Index (TLI)                       1.000
+
+Loglikelihood and Information Criteria:
+
+  Loglikelihood user model (H0)              -1052.405
+  Loglikelihood unrestricted model (H1)      -1052.405
+                                                      
+  Akaike (AIC)                                2114.810
+  Bayesian (BIC)                              2133.329
+  Sample-size adjusted Bayesian (SABIC)       2117.472
+
+Root Mean Square Error of Approximation:
+
+  RMSEA                                          0.000
+  90 Percent confidence interval - lower         0.000
+  90 Percent confidence interval - upper         0.000
+  P-value H_0: RMSEA &lt;= 0.050                       NA
+  P-value H_0: RMSEA &gt;= 0.080                       NA
+
+Standardized Root Mean Square Residual:
+
+  SRMR                                           0.000
+
+Parameter Estimates:
+
+  Standard errors                            Bootstrap
+  Number of requested bootstrap draws             1000
+  Number of successful bootstrap draws             998
+
+Regressions:
+                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+  attitude ~                                                             
+    ad_xpsr    (a)     0.792    0.029   26.885    0.000    0.792    0.861
+  purchase_amount ~                                                      
+    attitud    (b)     1.888    0.112   16.908    0.000    1.888    0.733
+    ad_xpsr (c_pr)     0.492    0.101    4.882    0.000    0.492    0.208
+
+Variances:
+                   Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+   .attitude          0.973    0.084   11.633    0.000    0.973    0.259
+   .purchase_amont    3.926    0.310   12.655    0.000    3.926    0.158
+
+Defined Parameters:
+                   Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+    indirect          1.496    0.104   14.329    0.000    1.496    0.631
+    total             1.988    0.078   25.422    0.000    1.988    0.838</code></pre>
+</div>
+</div>
+<p>이 모형을 통해 광고노출이 브랜드 태도에 긍정적 영향을 주고, 그 태도가 매출에 영향을 주는지 확인할 수 있다. <strong>매개효과는 ’왜’라는 질문에 대한 통계적 답을 찾는 과정</strong>으로, 고객 행동의 내부 메커니즘을 이해할 수 있도록 도와준다.</p>
+</section>
+<section id="단순-회귀를-넘어서는-이유-전략적-통찰" class="level3" data-number="7.1.4">
+<h3 data-number="7.1.4" class="anchored" data-anchor-id="단순-회귀를-넘어서는-이유-전략적-통찰"><span class="header-section-number">7.1.4</span> 단순 회귀를 넘어서는 이유: 전략적 통찰</h3>
+<p>단순 회귀는 변수 간의 평균적인 관계를 파악하는 데 유용하다. 그러나 실제 외식산업에서 마케팅, 메뉴 개발, 고객 세분화 전략을 수립하려면 <strong>그 이상의 통찰이 필요하다.</strong> 특히 다음과 같은 질문을 다루려면 단순 회귀를 넘어선 모형이 필요하다.</p>
+<p><strong>-</strong> 어떤 고객군이 마케팅에 더 민감한가? <br> <strong>-</strong> 어떤 경로를 통해 우리의 캠페인이 효과를 발휘하는가? <br> <strong>-</strong> 특정 조건에서 효과가 사라지거나 반전되는가? <br></p>
+<p>이러한 질문은 모두 조절효과와 매개효과를 통해 답할 수 있다.</p>
+<p>단순 회귀는 외식 데이터 분석의 출발점이지만, 실제 고객 행동의 복잡성을 설명하기에는 <strong>한계가 있다.</strong> 특정 관계가 다른 변수에 따라 달라지는 <strong>조절효과</strong>, 그리고 관계가 중간 변수에 의해 매개되는 <strong>매개효과</strong>는 단순 회귀가 설명하지 못하는 부분을 보완한다.</p>
+<p>다음 단원에서는 이러한 확장된 개념 중 첫 번째인 조절효과에 대해 본격적으로 살펴본다. 조절변수를 식별하고, 상호작용항(interaction term)을 모델에 추가하여 관계의 조건부 구조를 어떻게 해석할 수 있는지 학습한다.</p>
+</section>
+</section>
+<section id="조절효과란-무엇인가-interaction-term의-이해" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="조절효과란-무엇인가-interaction-term의-이해"><span class="header-section-number">7.2</span> 조절효과란 무엇인가?: Interaction Term의 이해</h2>
+<section id="관계가-항상-일정할까" class="level3" data-number="7.2.1">
+<h3 data-number="7.2.1" class="anchored" data-anchor-id="관계가-항상-일정할까"><span class="header-section-number">7.2.1</span> 관계가 항상 일정할까?</h3>
+<p>외식 마케팅 담당자가 광고노출이 매출에 어떤 영향을 주는지를 분석하고자 한다고 가정하자. 단순 회귀모형을 적용하면 “광고를 많이 보면 매출이 늘어난다”는 결론에 도달할 수 있다. 그러나 모든 고객이 동일하게 반응할까?</p>
+<p>젊은 고객은 온라인 광고에 민감하게 반응할 수 있고, 중장년층은 광고보다는 오랜 고객경험이나 입소문에 더 의존할 수도 있다. 이런 차이를 반영하지 않으면 우리는 <strong>광고효과를 평균적으로만 해석하는 오류</strong>를 범하게 된다. 이처럼 어떤 변수의 효과가 <strong>다른 변수에 따라 달라지는 현상</strong>을 <strong>조절효과(moderation effect)</strong>라고 한다.</p>
+</section>
+<section id="조절효과의-개념적-구조" class="level3" data-number="7.2.2">
+<h3 data-number="7.2.2" class="anchored" data-anchor-id="조절효과의-개념적-구조"><span class="header-section-number">7.2.2</span> 조절효과의 개념적 구조</h3>
+<p>조절효과는 한 변수 X(예: 광고노출)가 종속변수 Y(예: 구매금액)에 미치는 영향이 <strong>제3의 변수 Z(예: 연령)</strong>에 따라 달라지는 구조를 가진다. Z는 조절변수이며, 이 구조는 다음과 같은 통계 모형으로 표현된다:</p>
+<p><span class="math display">\[
+Y = b_0 + b_1 \cdot X + b_2 \cdot Z + b_3 \cdot (X \times Z) + e
+\]</span></p>
+<p>여기서 <span class="math inline">\((X \times Z)\)</span>가 <strong>상호작용항(interaction term)</strong>이며, 이 항의 회귀계수 <span class="math inline">\(b_3\)</span>가 유의하면 조절효과가 있다고 본다.</p>
+</section>
+<section id="외식산업-예제-광고-효과는-연령에-따라-다를까" class="level3" data-number="7.2.3">
+<h3 data-number="7.2.3" class="anchored" data-anchor-id="외식산업-예제-광고-효과는-연령에-따라-다를까"><span class="header-section-number">7.2.3</span> 외식산업 예제: 광고 효과는 연령에 따라 다를까?</h3>
+<p>가상의 외식소비자 데이터를 생성해 광고노출(ad_exposure)과 구매금액(purchase_amount) 사이의 관계가 연령(age)에 따라 달라지는지 분석해보자.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">300</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">ad_exposure =</span> <span class="fu">rpois</span>(n, <span class="at">lambda =</span> <span class="dv">5</span>),</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">age =</span> <span class="fu">round</span>(<span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">35</span>, <span class="at">sd =</span> <span class="dv">10</span>), <span class="dv">0</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">purchase_amount =</span> <span class="dv">15</span> <span class="sc">+</span> <span class="dv">3</span><span class="sc">*</span>ad_exposure <span class="sc">+</span> <span class="fl">0.1</span><span class="sc">*</span>age <span class="sc">-</span> <span class="fl">0.05</span><span class="sc">*</span>ad_exposure<span class="sc">*</span>age <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="dv">5</span>)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>이 데이터는 다음을 반영한다:</p>
+<p><strong>-</strong> 광고노출이 증가할수록 매출은 전반적으로 증가한다.<br> <strong>-</strong> 그러나 나이가 많아질수록 광고 효과는 점차 약해진다 (interaction term의 계수는 음수). <br></p>
+<p>회귀모형을 적합해보자.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>model_interaction <span class="ot">&lt;-</span> <span class="fu">lm</span>(purchase_amount <span class="sc">~</span> ad_exposure <span class="sc">*</span> age, <span class="at">data =</span> df)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model_interaction)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = purchase_amount ~ ad_exposure * age, data = df)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-14.4086  -3.2096  -0.0942   3.7108  17.0142 
+
+Coefficients:
+                Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)     14.69119    2.81575   5.218 3.42e-07 ***
+ad_exposure      3.19034    0.47895   6.661 1.32e-10 ***
+age              0.06975    0.07721   0.903 0.367044    
+ad_exposure:age -0.04958    0.01303  -3.805 0.000172 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 4.995 on 296 degrees of freedom
+Multiple R-squared:  0.3805,    Adjusted R-squared:  0.3742 
+F-statistic: 60.59 on 3 and 296 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<p>출력 결과에서 <strong>ad_exposure:age 항</strong>의 계수가 유의하면 조절효과가 존재함을 의미한다.</p>
+</section>
+<section id="시각화를-통한-조절효과-해석" class="level3" data-number="7.2.4">
+<h3 data-number="7.2.4" class="anchored" data-anchor-id="시각화를-통한-조절효과-해석"><span class="header-section-number">7.2.4</span> 시각화를 통한 조절효과 해석</h3>
+<p>상호작용은 시각적으로 해석하는 것이 이해에 효과적이다. interactions 패키지를 이용하면 조절효과를 쉽게 시각화할 수 있다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(interactions)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">interact_plot</span>(model_interaction, <span class="at">pred =</span> ad_exposure, <span class="at">modx =</span> age, <span class="at">plot.points =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Chapter7_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(df<span class="sc">$</span>age)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 34.81667</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sd</span>(df<span class="sc">$</span>age)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 9.439991</code></pre>
+</div>
+</div>
+<p>이 그래프를 보면 연령대에 따라 광고노출의 효과가 달라지는 패턴을 확인할 수 있다. 나이가 어릴수록 광고노출의 기울기가 가파르게 나타나며, 연령이 높아질수록 그 기울기는 완만해진다. 이는 <strong>“연령이 광고 효과를 조절한다”</strong>는 증거다.</p>
+<p>위의 그래프처럼 평균값, 평균값 <span class="math inline">\(\pm\)</span> 표준편차로 그래프를 그리는 이유가 무엇일까?</p>
+<p>여기서 조절변수로 사용된 age 라는 변수는 고객의 나이로 연속형 변수이다. 연속형변수가 조절효과가 있을 때, 단순하게 조절효과가 유의하다는 표현은 매우 불성실한 리포팅이다. <strong>조절변수가 음의 방향으로 유의하므로 나이가 많아질 수록 광고노출과 매출의 관계는 줄어든다.</strong>는 표현이 보다 정확하다. 그런데, 이러한 표현은 분석자는 이해를 해도 보고를 받는 임원들은 전혀 이해하지 못할 수 있다. 또한, 조절의 정도가 얼마나 큰지도 중요하다. 통계적으로 유의할지라도 그 조절의 크기가 매우 작다면 사실 통계적 유의성은 현실적으로 별 의미가 없을 수도 있다.</p>
+<p>따라서, 이러한 경우 항상 그래프로 결과를 표현하는 것이 중요하다. 문제는 조절변수가 연속형 변수이기 때문에, 구간을 나누어야 하는데, 구간을 나누는 기준이 명확하지 않다는 것이다. 대부분 이럴 경우 평균값과 표준편차를 이용한다. 이렇게 하면 대략적으로 평균나이와 표준편차를 이용해 계산이 가능하기 때문이다.</p>
+<p>위의 경우 평균 나이를 35세로 보고, 표준편차를 9세 정도로 본다면, 대략 26세, 35세 그리고 44세의 고객의 평균적인 광고효과가 눈에 띄게 다르다는 점을 확인할 수 있다. 만약 평균 + 2 <span class="math inline">\(\times\)</span> 표준편차 정도되면 대략 53세 정도가 될텐데, 이 경우 광고효과가 거의 없을 것이라는 사실을 예측할 수 있다. 즉, 시니어 시장확대를 위해 광고에 보다 많은 투자를 하는 것은 현실적으로 효과가 없다는 것을 알 수 있다.</p>
+</section>
+<section id="범주형-조절변수의-해석" class="level3" data-number="7.2.5">
+<h3 data-number="7.2.5" class="anchored" data-anchor-id="범주형-조절변수의-해석"><span class="header-section-number">7.2.5</span> 범주형 조절변수의 해석</h3>
+<p>조절변수가 범주형일 때도 동일한 논리를 적용할 수 있다. 예를 들어 고객을 “신규”와 “기존”으로 나누고, 광고 효과가 고객 유형에 따라 달라지는지를 살펴보자.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">77</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>df_cat <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">ad_exposure =</span> <span class="fu">rpois</span>(n, <span class="at">lambda =</span> <span class="dv">5</span>),</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">customer_type =</span> <span class="fu">sample</span>(<span class="fu">c</span>(<span class="st">"new"</span>, <span class="st">"existing"</span>), n, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">customer_type_binary =</span> <span class="fu">ifelse</span>(customer_type <span class="sc">==</span> <span class="st">"new"</span>, <span class="dv">0</span>, <span class="dv">1</span>),</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">purchase_amount =</span> <span class="dv">10</span> <span class="sc">+</span> <span class="dv">4</span><span class="sc">*</span>ad_exposure <span class="sc">+</span> <span class="dv">3</span><span class="sc">*</span>customer_type_binary <span class="sc">-</span> <span class="dv">2</span><span class="sc">*</span>ad_exposure<span class="sc">*</span>customer_type_binary <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="dv">4</span>)</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>고객유형이 기존 고객일 때(ad_exposure * customer_type_binary 항) 광고 효과가 감소하는 구조다.</p>
+<p>조절효과의 회귀분석의 식을 여기에 다시 적용해보자.</p>
+<p><span class="math display">\[
+Y = b_0 + b_1 \cdot X + b_2 \cdot Z + b_3 \cdot (X \times Z) + e
+\]</span></p>
+<p>Z는 조절변수로서 1 = New customer; 0 = Existing customer 이다. 따라서 우리는 위의 조절효과의 회귀식을 둘로 나누어 볼 수 있다.</p>
+<p><strong>Z = 0: 기존고객의 회귀식</strong></p>
+<p><span class="math display">\[
+Y = b_0 + b_1 \cdot X + e
+\]</span></p>
+<p><strong>Z = 1: 신규고객의 회귀식</strong></p>
+<p><span class="math display">\[
+Y = (b_0 + b_2) + (b_1 + b_3) \cdot X + e
+\]</span></p>
+<p>위의 두 식을 비교하면 차이를 명확하게 이해할 수 있다. 만약 더미변수인 <strong>Z가 유의할 경우 신규고객과 기존 고객간의 평균매출(절편)이 달라진다.</strong> 반면에, 조절변수 <span class="math inline">\((X \times Z)\)</span>가 유의할 경우 신규고객과 기존고객간의 <strong>기울기가 달라진다.</strong> 기울기가 다르다는 의미는 동일한 수준의 광고노출 효과가 있을 경우 기존고객 보다는 신규고객의 매출 증가의 정도가 더 높다는 의미가 된다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>model_cat <span class="ot">&lt;-</span> <span class="fu">lm</span>(purchase_amount <span class="sc">~</span> ad_exposure <span class="sc">*</span> customer_type, <span class="at">data =</span> df_cat)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model_cat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = purchase_amount ~ ad_exposure * customer_type, data = df_cat)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-10.8600  -2.9265   0.0654   2.5010  11.9338 
+
+Coefficients:
+                             Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)                   13.0610     0.7397  17.657  &lt; 2e-16 ***
+ad_exposure                    2.0869     0.1372  15.207  &lt; 2e-16 ***
+customer_typenew              -1.1143     1.0854  -1.027    0.305    
+ad_exposure:customer_typenew   1.6579     0.1968   8.423 1.61e-15 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 3.895 on 296 degrees of freedom
+Multiple R-squared:  0.8066,    Adjusted R-squared:  0.8047 
+F-statistic: 411.6 on 3 and 296 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<p>ad_exposure:customer_typeexisting 항이 유의하다면, 광고 효과가 고객유형에 따라 달라진다는 것을 의미한다.</p>
+<p>시각화로 확인해보자.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">interact_plot</span>(model_cat, <span class="at">pred =</span> ad_exposure, <span class="at">modx =</span> customer_type, <span class="at">plot.points =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Chapter7_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>그래프를 보면 신규 고객과 기존 고객 각각에 대해 광고노출이 매출에 미치는 영향의 기울기가 다르다는 것을 확인할 수 있다. 기존 고객은 이미 브랜드에 익숙하기 때문에 광고 효과가 작아지는 경향이 나타난다.</p>
+</section>
+<section id="조절효과를-사용할-때-유의할-점" class="level3" data-number="7.2.6">
+<h3 data-number="7.2.6" class="anchored" data-anchor-id="조절효과를-사용할-때-유의할-점"><span class="header-section-number">7.2.6</span> 조절효과를 사용할 때 유의할 점</h3>
+<p>조절효과는 매우 강력한 분석 도구이지만, 몇 가지 주의할 점이 있다.</p>
+<p>첫째, <strong>상호작용항을 추가할 경우 해석이 단순하지 않다.</strong> 기본 효과(main effect)는 이제 특정 수준에서의 효과일 뿐이다. 예를 들어 <span class="math inline">\(b_1\)</span>은 조절변수가 0일 때의 효과다. 위의 조절변숙 더미변수인 경우의 두 가지로 나누어서 본 회귀식을 확인해보라.</p>
+<p>둘째, 조절변수가 연속형일 경우에는 <strong>평균 중심화(mean-centering)</strong>가 추천된다. 이는 다중공선성 문제를 줄이고 해석을 단순화한다. 예를 들어 다음과 같이 중심화된 변수로 분석할 수 있다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">age_c =</span> <span class="fu">scale</span>(age, <span class="at">center =</span> <span class="cn">TRUE</span>, <span class="at">scale =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>model_centered <span class="ot">&lt;-</span> <span class="fu">lm</span>(purchase_amount <span class="sc">~</span> ad_exposure <span class="sc">*</span> age_c, <span class="at">data =</span> df)</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model_centered)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = purchase_amount ~ ad_exposure * age_c, data = df)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-14.4086  -3.2096  -0.0942   3.7108  17.0142 
+
+Coefficients:
+                  Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)       17.11981    0.70327  24.343  &lt; 2e-16 ***
+ad_exposure        1.46396    0.12947  11.308  &lt; 2e-16 ***
+age_c              0.06975    0.07721   0.903 0.367044    
+ad_exposure:age_c -0.04958    0.01303  -3.805 0.000172 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 4.995 on 296 degrees of freedom
+Multiple R-squared:  0.3805,    Adjusted R-squared:  0.3742 
+F-statistic: 60.59 on 3 and 296 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<p>셋째, 조절변수가 연속형 변수일 때, 평균값과 표준편차를 이용하여 구간을 나누어서 이해하고 해석하는 것이 보다 유익하다.</p>
+<p>넷째, interaction term은 항상 <strong>실제 데이터에서 상호작용이 존재하는 경우에만 추가</strong>하는 것이 바람직하다. 무의미한 상호작용은 해석만 복잡하게 만들 뿐이다.</p>
+<p>조절효과는 단순한 평균적 관계를 넘어서 <strong>“언제, 누구에게, 어떤 조건에서 효과가 강해지는가”</strong>를 분석할 수 있게 해준다. 외식산업에서 고객의 특성(연령, 방문빈도, 충성도 등)을 조절변수로 사용하면, 보다 정밀한 타깃 마케팅 전략을 설계할 수 있다.</p>
+<p>다음에서는 관계가 어떤 중간 변수를 통해 형성되는지를 분석하는 <strong>매개효과(mediation effect)</strong>에 대해 다룬다. 조절효과가 조건부 관계의 구조를 밝히는 도구라면, 매개효과는 관계의 <strong>기제(mechanism)</strong>를 파악하는 도구다.</p>
+</section>
+</section>
+<section id="매개효과란-무엇인가-mediation의-개념과-경로분석" class="level2" data-number="7.3">
+<h2 data-number="7.3" class="anchored" data-anchor-id="매개효과란-무엇인가-mediation의-개념과-경로분석"><span class="header-section-number">7.3</span> 매개효과란 무엇인가?: Mediation의 개념과 경로분석</h2>
+<section id="겉으로-보이는-관계-너머를-탐색하기" class="level3" data-number="7.3.1">
+<h3 data-number="7.3.1" class="anchored" data-anchor-id="겉으로-보이는-관계-너머를-탐색하기"><span class="header-section-number">7.3.1</span> 겉으로 보이는 관계 너머를 탐색하기</h3>
+<p>광고노출이 매출을 증가시킨다는 분석 결과를 얻었다고 가정하자. 이 결론만으로 마케팅 전략을 세울 수 있을까? 실제 고객이 광고를 본 뒤 바로 구매하는 경우도 있지만, 대부분은 광고를 보고 브랜드에 대한 <strong>호감이나 신뢰</strong>, 즉 <strong>태도(attitude)</strong>가 바뀐 뒤에 구매로 이어지는 경우가 더 많다. 이처럼 <strong>어떤 변수의 효과가 직접적으로 결과에 영향을 주는 것이 아니라, 다른 변수에 영향을 미친 후 다시 결과에 도달하는 경로</strong>를 매개효과(mediation effect)라고 한다.</p>
+</section>
+<section id="매개효과의-기본-구조" class="level3" data-number="7.3.2">
+<h3 data-number="7.3.2" class="anchored" data-anchor-id="매개효과의-기본-구조"><span class="header-section-number">7.3.2</span> 매개효과의 기본 구조</h3>
+<p>매개모형은 다음과 같은 세 변수로 구성된다:</p>
+<p><strong>-</strong> 독립변수 X: 광고노출 (ad_exposure) <br> <strong>-</strong> 매개변수 M: 브랜드 태도 (attitude) <br> <strong>-</strong> 종속변수 Y: 구매금액 (purchase_amount) <br></p>
+<p>이 구조를 화살표로 표현하면 다음과 같다:</p>
+<p><span class="math display">\[\text{ad\_exposure} \rightarrow \text{attitude} \rightarrow \text{purchase\_amount}\]</span></p>
+<p>여기서 광고노출이 태도에 영향을 주고, 태도가 다시 구매금액에 영향을 주면 <strong>간접경로(indirect effect)</strong>가 존재한다. 동시에 광고노출이 구매금액에 <strong>직접적으로도 영향을 줄 수 있다.</strong></p>
+<p>전체 효과는 다음처럼 분해된다:</p>
+<p><strong>- 직접효과</strong>: ad_exposure <span class="math inline">\(\rightarrow\)</span> purchase_amount <br> <strong>- 간접효과</strong>: ad_exposure <span class="math inline">\(\rightarrow\)</span> attitude <span class="math inline">\(\rightarrow\)</span> purchase_amount <br> <strong>- 총효과</strong>: 직접효과 + 간접효과 <br></p>
+</section>
+<section id="외식산업-예제-광고-태도-매출" class="level3" data-number="7.3.3">
+<h3 data-number="7.3.3" class="anchored" data-anchor-id="외식산업-예제-광고-태도-매출"><span class="header-section-number">7.3.3</span> 외식산업 예제: 광고 → 태도 → 매출</h3>
+<p>다음은 이 구조를 반영한 가상의 외식산업 데이터를 생성하는 코드다. 이 데이터는 광고노출이 브랜드 태도를 바꾸고, 그 태도가 구매금액에 영향을 주는 방식으로 만들어졌다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">300</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">ad_exposure =</span> <span class="fu">rpois</span>(n, <span class="at">lambda =</span> <span class="dv">5</span>)</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">attitude =</span> <span class="dv">3</span> <span class="sc">+</span> <span class="fl">0.8</span> <span class="sc">*</span> ad_exposure <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="dv">1</span>),</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">purchase_amount =</span> <span class="dv">10</span> <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> attitude <span class="sc">+</span> <span class="fl">0.3</span> <span class="sc">*</span> ad_exposure <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="dv">2</span>)</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>여기서 광고노출의 효과가 태도를 통해 간접적으로 매출에 작용하도록 설계되어 있다.</p>
+</section>
+<section id="baron-kenny의-전통적-접근" class="level3" data-number="7.3.4">
+<h3 data-number="7.3.4" class="anchored" data-anchor-id="baron-kenny의-전통적-접근"><span class="header-section-number">7.3.4</span> Baron &amp; Kenny의 전통적 접근</h3>
+<p>고전적인 매개효과 검증 절차는 <strong>Baron &amp; Kenny (1986)</strong>의 3단계 방식이다. 각 단계에서 회귀모형을 적합하고, 효과의 유의성을 확인한다.</p>
+<p><span class="math inline">\(1.\; X \rightarrow M\)</span>이 유의해야 함 <br> <span class="math inline">\(2.\; X \rightarrow Y\)</span>가 유의해야 함 <br> <span class="math inline">\(3.\; X \rightarrow Y\)</span>의 효과가 M을 넣은 뒤 약해져야 함<br></p>
+<p>위의 3단계에서 매개변수(M)이 추가로 투입된 후에 독립변수(X)가 유의하지 않게 변하면, 매개변수(M)의 매개효과는 <strong>완전매개</strong>가 되고, 매개변수(M)가 추가로 투입된 후에도 독립변수(X)가 여전히 유의하다면, 매개변수(M)의 매개효과는 <strong>부분매개</strong>가 된다.</p>
+<p>R에서 이를 확인하기 위한 기본 회귀 분석은 다음과 같다:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1단계: X → M</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(attitude <span class="sc">~</span> ad_exposure, <span class="at">data =</span> df))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = attitude ~ ad_exposure, data = df)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-2.6668 -0.6209 -0.0172  0.6392  3.2174 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  3.06202    0.14750   20.76   &lt;2e-16 ***
+ad_exposure  0.79233    0.02716   29.17   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.9898 on 298 degrees of freedom
+Multiple R-squared:  0.7406,    Adjusted R-squared:  0.7398 
+F-statistic:   851 on 1 and 298 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 2단계: X → Y</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(purchase_amount <span class="sc">~</span> ad_exposure, <span class="at">data =</span> df))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = purchase_amount ~ ad_exposure, data = df)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-8.0723 -1.9102 -0.0475  1.7906  7.7540 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) 15.64186    0.40659   38.47   &lt;2e-16 ***
+ad_exposure  1.98801    0.07487   26.55   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 2.728 on 298 degrees of freedom
+Multiple R-squared:  0.7029,    Adjusted R-squared:  0.7019 
+F-statistic: 705.1 on 1 and 298 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 3단계: X + M → Y</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(purchase_amount <span class="sc">~</span> ad_exposure <span class="sc">+</span> attitude, <span class="at">data =</span> df))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = purchase_amount ~ ad_exposure + attitude, data = df)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-5.4233 -1.3287  0.0217  1.4467  5.1101 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)   9.8611     0.4641  21.247  &lt; 2e-16 ***
+ad_exposure   0.4922     0.1073   4.587 6.64e-06 ***
+attitude      1.8879     0.1165  16.199  &lt; 2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 1.991 on 297 degrees of freedom
+Multiple R-squared:  0.8423,    Adjusted R-squared:  0.8412 
+F-statistic:   793 on 2 and 297 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<p>Baron &amp; Kenny 방식은 절차적으로 간단하지만, 간접효과의 통계적 유의성이 있는지를 직접 검증하지 못한다는 한계가 있다. 쉽게 설명하자면, 1단계의 독립변수의 회귀계수를 <span class="math inline">\(a\)</span>라고 하고, 3단계의 매개변수의 회귀계수를 <span class="math inline">\(b\)</span>라고 할 때, 매개효과는 <span class="math inline">\(a \times b\)</span>가 되는데, 이 <span class="math inline">\(a \times b\)</span>의 유의성을 직접 검증하는 것이 아니라, 단계별로 쪼개서 나누어 검증하기 때문에 직접검증을 하지 못하는 한계가 있다는 의미이다.</p>
+</section>
+<section id="소벨-테스트로-간접효과-유의성-검정하기" class="level3" data-number="7.3.5">
+<h3 data-number="7.3.5" class="anchored" data-anchor-id="소벨-테스트로-간접효과-유의성-검정하기"><span class="header-section-number">7.3.5</span> 소벨 테스트로 간접효과 유의성 검정하기</h3>
+<p>Baron &amp; Kenny 방식은 각각의 경로 계수(a, b)의 유의성을 따로 검정하지만, 정작 핵심인 <strong>간접효과</strong> <span class="math inline">\(a \times b\)</span> 자체의 유의성을 직접 검정하지 못한다. 이를 보완하기 위해 등장한 방법이 바로 <strong>소벨 테스트(Sobel test)</strong>다.</p>
+<p>소벨 테스트는 다음과 같은 식을 사용하여 <span class="math inline">\(a \times b\)</span>의 표준오차를 계산하고, 이를 기반으로 <strong>Z-값</strong>을 구해 유의성을 판단한다.</p>
+<p>소벨 Z값 공식:</p>
+<p><span class="math display">\[
+\text{z-value} = \frac{a \cdot b}{\sqrt{b^2 \cdot s_a^2 + a^2 \cdot s_b^2}}
+\]</span></p>
+<p>여기서<br>
+<strong>-</strong> <span class="math inline">\(a\)</span>는 1단계의 <span class="math inline">\(X \rightarrow M\)</span>의 회귀계수 <br><br>
+<strong>-</strong> <span class="math inline">\(b\)</span>는 3단계의 <span class="math inline">\(M \rightarrow Y\)</span>의 회귀계수 <br> <strong>-</strong> <span class="math inline">\(s_a\)</span>, <span class="math inline">\(s_b\)</span>는 각각의 표준오차 <br></p>
+<p>다음은 앞서 생성한 외식산업 데이터를 이용해 소벨 테스트를 실행하는 코드이다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1단계: X → M</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>model_a <span class="ot">&lt;-</span> <span class="fu">lm</span>(attitude <span class="sc">~</span> ad_exposure, <span class="at">data =</span> df)</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 2단계: M + X → Y</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>model_b <span class="ot">&lt;-</span> <span class="fu">lm</span>(purchase_amount <span class="sc">~</span> ad_exposure <span class="sc">+</span> attitude, <span class="at">data =</span> df)</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 계수 및 표준오차 추출</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="fu">coef</span>(<span class="fu">summary</span>(model_a))[<span class="st">"ad_exposure"</span>, <span class="st">"Estimate"</span>]</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>sa <span class="ot">&lt;-</span> <span class="fu">coef</span>(<span class="fu">summary</span>(model_a))[<span class="st">"ad_exposure"</span>, <span class="st">"Std. Error"</span>]</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="fu">coef</span>(<span class="fu">summary</span>(model_b))[<span class="st">"attitude"</span>, <span class="st">"Estimate"</span>]</span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>sb <span class="ot">&lt;-</span> <span class="fu">coef</span>(<span class="fu">summary</span>(model_b))[<span class="st">"attitude"</span>, <span class="st">"Std. Error"</span>]</span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a><span class="co"># 소벨 Z값 계산</span></span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>sobel_z <span class="ot">&lt;-</span> (a <span class="sc">*</span> b) <span class="sc">/</span> <span class="fu">sqrt</span>(b<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> sa<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> a<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> sb<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>sobel_p <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fu">pnorm</span>(<span class="fu">abs</span>(sobel_z)))  <span class="co"># 양측 검정</span></span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a><span class="co"># 결과 출력</span></span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Sobel Z ="</span>, sobel_z, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Sobel Z = 14.16215 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"p-value ="</span>, sobel_p, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>p-value = 0 </code></pre>
+</div>
+</div>
+<p>출력 결과는 다음과 같이 해석할 수 있다:</p>
+<p><strong>-</strong> <span class="math inline">\(sobel_z\)</span> 값이 <span class="math inline">\(\pm 1.96\)</span> 이상이면 95% 수준에서 유의함 <br> <strong>-</strong> p-value가 0.05 미만이면 간접효과가 통계적으로 유의함</p>
+<p>이 검정은 정규분포 가정을 기반으로 하기 때문에, 표본 수가 작거나 분포가 비정규일 경우 신뢰성이 낮아질 수 있다. 이런 경우에는 이후의 <strong>bootstrapping 방식(lavaan 기반)</strong>이 더 정확하므로 사용이 권장된다.</p>
+<p>소벨 테스트는 매개효과를 수학적으로 이해하는 데 유용한 도구이며, <span class="math inline">\(a \times b\)</span>의 유의성을 수식 기반으로 검정할 수 있다는 점에서 가치는 크다. 그러나 현실 데이터에서는 간접효과의 분포가 비정규적인 경우가 많기 때문에, 실제 연구에서는 bootstrapping 기반 검정이 더 신뢰할 수 있는 방법이다.</p>
+</section>
+<section id="process-모델과-bootstrapping" class="level3" data-number="7.3.6">
+<h3 data-number="7.3.6" class="anchored" data-anchor-id="process-모델과-bootstrapping"><span class="header-section-number">7.3.6</span> PROCESS 모델과 Bootstrapping</h3>
+<p>최근에는 Hayes의 PROCESS model이나 구조방정식 모형(lavaan) 기반 분석이 더 널리 사용된다. 이 방식은 간접효과의 크기를 계산하고, <strong>부트스트래핑(bootstrapping)</strong>을 통해 그 유의성을 직접 검정한다.</p>
+<p>아래는 lavaan을 이용한 매개모형 분석 코드다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lavaan)</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>model_mediation <span class="ot">&lt;-</span> <span class="st">'</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="st">  attitude ~ a * ad_exposure</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="st">  purchase_amount ~ b * attitude + c_prime * ad_exposure</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="st">  indirect := a * b</span></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a><span class="st">  total := c_prime + (a * b)</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a><span class="st">'</span></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">sem</span>(model_mediation, <span class="at">data =</span> df, <span class="at">se =</span> <span class="st">"bootstrap"</span>, <span class="at">bootstrap =</span> <span class="dv">1000</span>)</span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit, <span class="at">standardized =</span> <span class="cn">TRUE</span>, <span class="at">fit.measures =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>lavaan 0.6-19 ended normally after 1 iteration
+
+  Estimator                                         ML
+  Optimization method                           NLMINB
+  Number of model parameters                         5
+
+  Number of observations                           300
+
+Model Test User Model:
+                                                      
+  Test statistic                                 0.000
+  Degrees of freedom                                 0
+
+Model Test Baseline Model:
+
+  Test statistic                               958.936
+  Degrees of freedom                                 3
+  P-value                                        0.000
+
+User Model versus Baseline Model:
+
+  Comparative Fit Index (CFI)                    1.000
+  Tucker-Lewis Index (TLI)                       1.000
+
+Loglikelihood and Information Criteria:
+
+  Loglikelihood user model (H0)              -1052.405
+  Loglikelihood unrestricted model (H1)      -1052.405
+                                                      
+  Akaike (AIC)                                2114.810
+  Bayesian (BIC)                              2133.329
+  Sample-size adjusted Bayesian (SABIC)       2117.472
+
+Root Mean Square Error of Approximation:
+
+  RMSEA                                          0.000
+  90 Percent confidence interval - lower         0.000
+  90 Percent confidence interval - upper         0.000
+  P-value H_0: RMSEA &lt;= 0.050                       NA
+  P-value H_0: RMSEA &gt;= 0.080                       NA
+
+Standardized Root Mean Square Residual:
+
+  SRMR                                           0.000
+
+Parameter Estimates:
+
+  Standard errors                            Bootstrap
+  Number of requested bootstrap draws             1000
+  Number of successful bootstrap draws             998
+
+Regressions:
+                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+  attitude ~                                                             
+    ad_xpsr    (a)     0.792    0.029   26.885    0.000    0.792    0.861
+  purchase_amount ~                                                      
+    attitud    (b)     1.888    0.112   16.908    0.000    1.888    0.733
+    ad_xpsr (c_pr)     0.492    0.101    4.882    0.000    0.492    0.208
+
+Variances:
+                   Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+   .attitude          0.973    0.084   11.633    0.000    0.973    0.259
+   .purchase_amont    3.926    0.310   12.655    0.000    3.926    0.158
+
+Defined Parameters:
+                   Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+    indirect          1.496    0.104   14.329    0.000    1.496    0.631
+    total             1.988    0.078   25.422    0.000    1.988    0.838</code></pre>
+</div>
+</div>
+<p>분석 결과에는 다음과 같은 핵심 계수가 포함된다:</p>
+<p><strong>-</strong> a: 광고노출이 태도에 미치는 효과 <br> <strong>-</strong> b: 태도가 매출에 미치는 효과 <br> <strong>-</strong> c_prime: 광고노출의 직접효과 <br> <strong>-</strong> indirect: 간접효과 (a × b) <br> <strong>-</strong> total: 총효과 (직접 + 간접) <br></p>
+</section>
+<section id="시각화를-통한-매개모형-해석" class="level3" data-number="7.3.7">
+<h3 data-number="7.3.7" class="anchored" data-anchor-id="시각화를-통한-매개모형-해석"><span class="header-section-number">7.3.7</span> 시각화를 통한 매개모형 해석</h3>
+<p>매개효과를 시각적 모형으로 그리면 다음과 같다. lavaanPlot 패키지를 이용하면 위 모형을 시각적으로 확인할 수 있다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>library(lavaanPlot)</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>lavaanPlot(model = fit, coefs = TRUE, stand = TRUE, graph_options = list(layout = "dot"))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="img-fluid quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="image/ch7_2.png" class="img-fluid figure-img"></p>
+<figcaption>lavaanPlot 매개효과</figcaption>
+</figure>
+</div>
+<p>이 그림을 통해 광고노출 <span class="math inline">\(\rightarrow\)</span> 태도 <span class="math inline">\(\rightarrow\)</span> 구매금액이라는 경로가 어떻게 구성되는지, 간접효과가 얼마나 기여하는지를 한눈에 볼 수 있다.</p>
+</section>
+<section id="간접효과의-유의성-왜-bootstrapping이-중요한가" class="level3" data-number="7.3.8">
+<h3 data-number="7.3.8" class="anchored" data-anchor-id="간접효과의-유의성-왜-bootstrapping이-중요한가"><span class="header-section-number">7.3.8</span> 간접효과의 유의성: 왜 bootstrapping이 중요한가?</h3>
+<p>Baron &amp; Kenny 방식은 간접효과가 유의한지 직접 검정하지 않기 때문에 Type I/II 오류 위험이 크다. 반면 lavaan에서는 bootstrap을 통해 <span class="math inline">\(a \times b\)</span>의 분포를 시뮬레이션하고, 신뢰구간을 계산해 간접효과의 유의성 여부를 정확히 평가할 수 있다.</p>
+<p>아래는 부트스트랩 간접효과의 신뢰구간을 추출하는 예시이다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">parameterEstimates</span>(fit, <span class="at">boot.ci.type =</span> <span class="st">"perc"</span>, <span class="at">standardized =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(label <span class="sc">==</span> <span class="st">"indirect"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       lhs op rhs    label   est    se      z pvalue ci.lower ci.upper std.lv
+1 indirect := a*b indirect 1.496 0.104 14.329      0    1.294    1.702  1.496
+  std.all std.nox
+1   0.631     0.3</code></pre>
+</div>
+</div>
+<p>만약 95% 신뢰구간이 0을 포함하지 않는다면 간접효과는 유의하다고 판단한다.</p>
+</section>
+<section id="현실-적용-외식-마케팅-전략에서-매개효과-활용" class="level3" data-number="7.3.9">
+<h3 data-number="7.3.9" class="anchored" data-anchor-id="현실-적용-외식-마케팅-전략에서-매개효과-활용"><span class="header-section-number">7.3.9</span> 현실 적용: 외식 마케팅 전략에서 매개효과 활용</h3>
+<p>외식산업에서 매개모형은 매우 실용적인 도구다. 단순히 어떤 광고가 매출에 영향을 주는지를 넘어서, 그 광고가 어떻게 고객의 인식을 바꾸고, 그 인식이 어떤 방식으로 소비행동에 영향을 주는지를 파악할 수 있다.</p>
+<p>예를 들어, 다음과 같은 전략적 질문을 분석할 수 있다:</p>
+<p><strong>-</strong> 캠페인이 브랜드 신뢰도를 얼마나 높였는가? <br> <strong>-</strong> 소비자 태도의 변화 없이 광고만으로 매출이 올라갈 수 있는가? <br> <strong>-</strong> 브랜드 태도가 구매의도에 미치는 영향은 연령대에 따라 다른가? <br></p>
+<p>매개효과는 <strong>관계의 메커니즘(mechanism)</strong>을 설명하는 강력한 통계적 도구다. 독립변수가 종속변수에 어떤 중간 경로를 통해 영향을 미치는지를 파악할 수 있으며, 브랜드전략, 마케팅캠페인, 고객경험 설계에 중요한 인사이트를 제공한다.</p>
+<p>다음 단원에서는 조절효과와 매개효과가 결합된 복합모형(예: 조절된 매개, 매개된 조절)에 대해 살펴본다. 이제 분석은 ’누가, 왜, 어떤 경로로 반응하는가’를 동시에 설명할 수 있는 복잡한 구조로 나아간다.</p>
+</section>
+</section>
+<section id="조절-vs-매개-구분과-혼합모형" class="level2" data-number="7.4">
+<h2 data-number="7.4" class="anchored" data-anchor-id="조절-vs-매개-구분과-혼합모형"><span class="header-section-number">7.4</span> 조절 vs 매개: 구분과 혼합모형</h2>
+<section id="왜-조절과-매개를-구분해야-할까" class="level3" data-number="7.4.1">
+<h3 data-number="7.4.1" class="anchored" data-anchor-id="왜-조절과-매개를-구분해야-할까"><span class="header-section-number">7.4.1</span> 왜 ’조절’과 ’매개’를 구분해야 할까?</h3>
+<p>외식산업 데이터를 분석하다 보면 “어떤 변수가 왜 영향을 주는가?”와 함께 “어떤 조건에서 그 영향이 더 강해지는가?”를 함께 질문하게 된다. 이 두 질문은 각각 <strong>매개효과(mediation)</strong>와 <strong>조절효과(moderation)</strong>에 대응된다. 두 개념은 모두 변수 간 관계를 확장하는 도구이지만, <strong>이론적 구조</strong>, <strong>모형 설계 방식</strong>, <strong>통계적 해석</strong> 측면에서 서로 명확하게 구분된다.</p>
+<p>매개효과는 <strong>효과의 경로(pathway)</strong>에 집중한다. 독립변수가 종속변수에 영향을 미치기 위해 어떤 중간 변수를 거치는지를 밝힌다. 반면 조절효과는 <strong>효과의 조건(condition)</strong>에 주목한다. 특정 효과가 <strong>어떤 변수에 의해 강화되거나 약화되는가</strong>를 밝히는 것이 핵심이다.</p>
+<p>예를 들어 “광고노출이 브랜드 태도를 바꾸고, 그 태도가 구매금액을 증가시킨다”는 주장은 매개모형에 해당한다. 반면 “광고 효과는 연령대에 따라 달라진다”는 주장은 조절모형이다.</p>
+</section>
+<section id="기본-구조의-시각적-비교" class="level3" data-number="7.4.2">
+<h3 data-number="7.4.2" class="anchored" data-anchor-id="기본-구조의-시각적-비교"><span class="header-section-number">7.4.2</span> 기본 구조의 시각적 비교</h3>
+<table class="table-striped table-hover table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 40%">
+<col style="width: 40%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">효과 유형</th>
+<th style="text-align: left;">설명</th>
+<th style="text-align: left;">도식 구조</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">매개효과</td>
+<td style="text-align: left;">X가 M을 거쳐 Y에 영향을 줌</td>
+<td style="text-align: left;"><span class="math inline">\(X \rightarrow M \rightarrow Y\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">조절효과</td>
+<td style="text-align: left;">X와 Y의 관계가 Z에 따라 달라짐</td>
+<td style="text-align: left;"><span class="math inline">\(X \times Z \rightarrow Y\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>두 효과는 서로 독립적으로 사용될 수도 있지만, <strong>현실 세계에서는 이 둘이 결합된 구조</strong>로 나타나는 경우가 많다. 이를 복합모형이라고 부르며, 대표적으로 <strong>조절된 매개(Moderated Mediation)</strong>와 <strong>매개된 조절(Mediated Moderation)</strong>이 있다.</p>
+</section>
+<section id="조절된-매개moderated-mediation란-무엇인가" class="level3" data-number="7.4.3">
+<h3 data-number="7.4.3" class="anchored" data-anchor-id="조절된-매개moderated-mediation란-무엇인가"><span class="header-section-number">7.4.3</span> 조절된 매개(Moderated Mediation)란 무엇인가?</h3>
+<p>조절된 매개는 말 그대로 <strong>“매개효과의 강도 자체가 조절된다”</strong>는 개념이다. 즉, 독립변수가 매개변수를 거쳐 종속변수에 영향을 미치는 <strong>간접효과</strong>가 제3의 변수에 따라 달라질 수 있다는 것이다.</p>
+<p>외식산업 예제를 들어보자. 어떤 브랜드가 SNS 광고를 통해 브랜드 태도를 형성하고, 그 태도가 매출에 영향을 준다고 하자. 그런데 고객의 연령대에 따라 <strong>광고가 태도에 미치는 영향</strong> 자체가 달라진다면, 매개경로의 첫 번째 단계가 조절되고 있는 것이다.</p>
+<p>구조는 다음과 같다:</p>
+<div class="img-fluid quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src=".\image/ch7_1.png" class="img-fluid figure-img"></p>
+<figcaption>조절된 매개</figcaption>
+</figure>
+</div>
+<p>연령대가 광고노출과 태도 간 관계를 조절한다면, 전체 간접효과가 연령에 따라 달라지는 것이다.</p>
+<p>다음은 조절된 매개를 모의 데이터로 구성한 예시이다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">300</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>df_mm <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">ad_exposure =</span> <span class="fu">rpois</span>(n, <span class="at">lambda =</span> <span class="dv">5</span>),</span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">age =</span> <span class="fu">round</span>(<span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">35</span>, <span class="at">sd =</span> <span class="dv">10</span>), <span class="dv">0</span>)</span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># age가 높을수록 광고의 태도에 대한 영향이 감소</span></span>
+<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">attitude =</span> <span class="dv">3</span> <span class="sc">+</span> <span class="fl">0.8</span><span class="sc">*</span>ad_exposure <span class="sc">-</span> <span class="fl">0.02</span><span class="sc">*</span>ad_exposure<span class="sc">*</span>age <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="dv">1</span>),</span>
+<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">purchase_amount =</span> <span class="dv">10</span> <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>attitude <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="dv">2</span>)</span>
+<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>이제 lavaan으로 구조방정식 모형을 작성할 수 있다. 하지만 조절된 매개는 일반적으로 PROCESS model 7 또는 8번 모형으로 구현되며, lavaan만으로는 직접 interaction term을 포함한 매개경로 해석이 복잡할 수 있다. 이런 경우 moderated_mediation() 구조를 명시적으로 구성하거나 PROCESS macro가 탑재된 processR 패키지를 사용할 수도 있다.</p>
+</section>
+<section id="매개된-조절mediated-moderation-구조는-어떤가" class="level3" data-number="7.4.4">
+<h3 data-number="7.4.4" class="anchored" data-anchor-id="매개된-조절mediated-moderation-구조는-어떤가"><span class="header-section-number">7.4.4</span> 매개된 조절(Mediated Moderation) 구조는 어떤가?</h3>
+<p>이번에는 조절효과가 먼저 존재하고, 그 조절효과가 다른 변수에 의해 설명되는 구조를 생각해보자. 즉, 독립변수와 조절변수의 interaction이 종속변수에 영향을 주고, 이 interaction의 효과가 어떤 중간 변수를 통해 영향을 미친다면 매개된 조절이 된다.</p>
+<p>예시: 광고노출과 고객 충성도의 상호작용이 매출에 영향을 미친다고 하자. 그런데 이 효과는 브랜드 이미지 인식을 거쳐 나타난다면, 조절효과가 먼저 있고 그 조절이 매개된 것이다.</p>
+<p>구조는 다음과 같다:</p>
+<p><span class="math display">\[
+(ad\_exposure \times loyalty) \times brand\_image \rightarrow purchase\_amount
+\]</span></p>
+</section>
+<section id="해석상의-주의점" class="level3" data-number="7.4.5">
+<h3 data-number="7.4.5" class="anchored" data-anchor-id="해석상의-주의점"><span class="header-section-number">7.4.5</span> 해석상의 주의점</h3>
+<p>복합모형을 사용할 때는 다음과 같은 점을 반드시 고려해야 한다.</p>
+<p>첫째, <strong>조절과 매개의 방향을 이론적으로 명확히 해야 한다.</strong> 예를 들어 “광고 효과가 연령에 따라 달라진다”는 구조를 설정해놓고, 그 효과가 브랜드 태도에 의해 설명된다고 말하면 모형이 논리적으로 뒤바뀔 수 있다.</p>
+<p>둘째, interaction term을 매개하는 구조를 만들 경우, 단순한 선형 회귀분석으로는 구조를 해석하기 어렵다. 이런 경우 구조방정식(SEM)이나 PROCESS macro와 같은 복합 모형 전용 분석도구가 필요하다.</p>
+<p>셋째, 샘플 수가 충분히 확보되어야 한다. 조절된 매개는 상호작용항과 간접효과가 동시에 포함되기 때문에 모형이 복잡해지고 통계적 검정력이 급격히 떨어질 수 있다.</p>
+<p>조절과 매개는 모두 변수 간 관계를 확장해주는 강력한 도구다. 하지만 분석을 설계할 때 이 둘이 구조상 어떻게 다르며, 어떤 상황에서 하나를 선택하고, 어떤 경우에는 함께 사용해야 하는지를 분명히 이해해야 한다. 특히 복합모형에서는 변수 간 이론적 연결성을 명확히 설계하고, 해석에 있어 혼란을 피하는 것이 중요하다.</p>
+</section>
+<section id="조절된-매개모형의-실습" class="level3" data-number="7.4.6">
+<h3 data-number="7.4.6" class="anchored" data-anchor-id="조절된-매개모형의-실습"><span class="header-section-number">7.4.6</span> 조절된 매개모형의 실습</h3>
+<table class="table-striped table-hover table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 40%">
+<col style="width: 40%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">수식 기호</th>
+<th style="text-align: center;">변수명 (데이터 내)</th>
+<th style="text-align: center;">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">\(X\)</span></td>
+<td style="text-align: center;"><code>ad_exposure</code></td>
+<td style="text-align: center;">광고노출 횟수</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="math inline">\(W\)</span></td>
+<td style="text-align: center;"><code>age</code></td>
+<td style="text-align: center;">연령 (조절변수)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">\(M\)</span></td>
+<td style="text-align: center;"><code>attitude</code></td>
+<td style="text-align: center;">브랜드 태도 (매개변수)</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="math inline">\(Y\)</span></td>
+<td style="text-align: center;"><code>purchase_amount</code></td>
+<td style="text-align: center;">구매금액 (종속변수)</td>
+</tr>
+</tbody>
+</table>
+<p>즉, 이 데이터는 단순 매개도 아니고, 단순 조절도 아니며, 광고노출 <span class="math inline">\(\rightarrow\)</span> 태도 <span class="math inline">\(\rightarrow\)</span> 구매금액이라는 매개 경로 안에서 연령이 광고의 영향력을 조절하는 복합 구조를 가진다. 이제 이 데이터를 R에서 분석하려면 lavaan 기반으로 다음과 같은 모형을 지정하게 된다:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. 패키지 로드</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lavaan)</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lavaanPlot)</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. 데이터 불러오기 (Python에서 저장한 df_mm 사용)</span></span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> df_mm</span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. interaction term 직접 생성 (lavaan은 formula 연산자를 지원하지 않음)</span></span>
+<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>int_exposure_age <span class="ot">&lt;-</span> df<span class="sc">$</span>ad_exposure <span class="sc">*</span> df<span class="sc">$</span>age</span>
+<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. lavaan용 모델 정의 (조절된 매개효과 포함, 직접효과 추가됨)</span></span>
+<span id="cb36-14"><a href="#cb36-14" aria-hidden="true" tabindex="-1"></a>model7_full <span class="ot">&lt;-</span> <span class="st">'</span></span>
+<span id="cb36-15"><a href="#cb36-15" aria-hidden="true" tabindex="-1"></a><span class="st">  # 조절된 매개 경로</span></span>
+<span id="cb36-16"><a href="#cb36-16" aria-hidden="true" tabindex="-1"></a><span class="st">  attitude ~ a1*ad_exposure + a2*age + a3*int_exposure_age</span></span>
+<span id="cb36-17"><a href="#cb36-17" aria-hidden="true" tabindex="-1"></a><span class="st">  </span></span>
+<span id="cb36-18"><a href="#cb36-18" aria-hidden="true" tabindex="-1"></a><span class="st">  # 결과 변수에 대한 경로</span></span>
+<span id="cb36-19"><a href="#cb36-19" aria-hidden="true" tabindex="-1"></a><span class="st">  purchase_amount ~ b*attitude + cp*ad_exposure</span></span>
+<span id="cb36-20"><a href="#cb36-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-21"><a href="#cb36-21" aria-hidden="true" tabindex="-1"></a><span class="st">  # 간접효과 정의</span></span>
+<span id="cb36-22"><a href="#cb36-22" aria-hidden="true" tabindex="-1"></a><span class="st">  indirect := a1 * b</span></span>
+<span id="cb36-23"><a href="#cb36-23" aria-hidden="true" tabindex="-1"></a><span class="st">  direct := cp</span></span>
+<span id="cb36-24"><a href="#cb36-24" aria-hidden="true" tabindex="-1"></a><span class="st">  total := cp + (a1 * b)</span></span>
+<span id="cb36-25"><a href="#cb36-25" aria-hidden="true" tabindex="-1"></a><span class="st">'</span></span>
+<span id="cb36-26"><a href="#cb36-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-27"><a href="#cb36-27" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. 모델 적합</span></span>
+<span id="cb36-28"><a href="#cb36-28" aria-hidden="true" tabindex="-1"></a>fit7 <span class="ot">&lt;-</span> <span class="fu">sem</span>(model7_full, <span class="at">data =</span> df, <span class="at">se =</span> <span class="st">"bootstrap"</span>, <span class="at">bootstrap =</span> <span class="dv">1000</span>)</span>
+<span id="cb36-29"><a href="#cb36-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-30"><a href="#cb36-30" aria-hidden="true" tabindex="-1"></a><span class="co"># 6. 요약 출력</span></span>
+<span id="cb36-31"><a href="#cb36-31" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit7, <span class="at">standardized =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>lavaan 0.6-19 ended normally after 1 iteration
+
+  Estimator                                         ML
+  Optimization method                           NLMINB
+  Number of model parameters                         7
+
+  Number of observations                           300
+
+Model Test User Model:
+                                                      
+  Test statistic                                 1.857
+  Degrees of freedom                                 2
+  P-value (Chi-square)                           0.395
+
+Parameter Estimates:
+
+  Standard errors                            Bootstrap
+  Number of requested bootstrap draws             1000
+  Number of successful bootstrap draws            1000
+
+Regressions:
+                    Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+  attitude ~                                                             
+    ad_exposr (a1)     0.918    0.100    9.177    0.000    0.918    1.193
+    age       (a2)     0.018    0.015    1.261    0.207    0.018    0.121
+    int_xpsr_ (a3)    -0.024    0.003   -8.467    0.000   -0.024   -1.322
+  purchase_amount ~                                                      
+    attitude   (b)     1.966    0.080   24.687    0.000    1.966    0.827
+    ad_exposr (cp)    -0.015    0.068   -0.218    0.827   -0.015   -0.008
+
+Variances:
+                   Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+   .attitude          1.165    0.094   12.365    0.000    1.165    0.478
+   .purchase_amont    4.364    0.361   12.100    0.000    4.364    0.317
+
+Defined Parameters:
+                   Estimate  Std.Err  z-value  P(&gt;|z|)   Std.lv  Std.all
+    indirect          1.805    0.212    8.499    0.000    1.805    0.987
+    direct           -0.015    0.068   -0.218    0.827   -0.015   -0.008
+    total             1.790    0.222    8.051    0.000    1.790    0.979</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 7. 간접효과와 신뢰구간 확인</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="fu">parameterEstimates</span>(fit7, <span class="at">standardized =</span> <span class="cn">TRUE</span>, <span class="at">boot.ci.type =</span> <span class="st">"perc"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(label <span class="sc">==</span> <span class="st">"indirect"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       lhs op  rhs    label   est    se     z pvalue ci.lower ci.upper std.lv
+1 indirect := a1*b indirect 1.805 0.212 8.499      0    1.399    2.225  1.805
+  std.all std.nox
+1   0.987   0.486</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># 8. 시각화 (선택)</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>lavaanPlot(model = fit7,</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>           stand = TRUE,</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>           coefs = TRUE,</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>           graph_options = list(layout = "dot"),  # layout을 'dot'으로 변경</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>           node_options = list(shape = "box"))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="img-fluid quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="image/ch7_3.png" class="img-fluid figure-img"></p>
+<figcaption>조절된 매개효과</figcaption>
+</figure>
+</div>
+<p>다음의 그래프는 조절된 매개효과(moderated mediation)를 시각화한 것이다. 핵심 해석은 다음과 같다.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 필요한 패키지</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 나이 세그먼트 설정 (예: 20세, 40세, 60세)</span></span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>age_seq <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">20</span>, <span class="dv">40</span>, <span class="dv">60</span>)</span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 시각화를 위한 가상의 광고 노출 값 설정</span></span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a>ad_exposure_range <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">5</span>, <span class="at">by =</span> <span class="fl">0.1</span>)</span>
+<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-11"><a href="#cb41-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 모델의 추정계수 사용 (fit7에서 가져온 값)</span></span>
+<span id="cb41-12"><a href="#cb41-12" aria-hidden="true" tabindex="-1"></a>a1 <span class="ot">&lt;-</span> <span class="fl">0.918</span>      <span class="co"># ad_exposr → attitude</span></span>
+<span id="cb41-13"><a href="#cb41-13" aria-hidden="true" tabindex="-1"></a>a2 <span class="ot">&lt;-</span> <span class="fl">0.018</span>      <span class="co"># age → attitude</span></span>
+<span id="cb41-14"><a href="#cb41-14" aria-hidden="true" tabindex="-1"></a>a3 <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fl">0.024</span>     <span class="co"># interaction(ad*age) → attitude</span></span>
+<span id="cb41-15"><a href="#cb41-15" aria-hidden="true" tabindex="-1"></a>b  <span class="ot">&lt;-</span> <span class="fl">1.966</span>      <span class="co"># attitude → purchase_amount</span></span>
+<span id="cb41-16"><a href="#cb41-16" aria-hidden="true" tabindex="-1"></a>cp <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fl">0.015</span>     <span class="co"># ad_exposr → purchase_amount (직접효과)</span></span>
+<span id="cb41-17"><a href="#cb41-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-18"><a href="#cb41-18" aria-hidden="true" tabindex="-1"></a><span class="co"># 데이터프레임 생성</span></span>
+<span id="cb41-19"><a href="#cb41-19" aria-hidden="true" tabindex="-1"></a>plot_data <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(</span>
+<span id="cb41-20"><a href="#cb41-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">ad_exposr =</span> ad_exposure_range,</span>
+<span id="cb41-21"><a href="#cb41-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">age =</span> age_seq</span>
+<span id="cb41-22"><a href="#cb41-22" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb41-23"><a href="#cb41-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb41-24"><a href="#cb41-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">interaction =</span> ad_exposr <span class="sc">*</span> age,</span>
+<span id="cb41-25"><a href="#cb41-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">attitude =</span> a1 <span class="sc">*</span> ad_exposr <span class="sc">+</span> a2 <span class="sc">*</span> age <span class="sc">+</span> a3 <span class="sc">*</span> interaction,</span>
+<span id="cb41-26"><a href="#cb41-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">purchase_amount =</span> cp <span class="sc">*</span> ad_exposr <span class="sc">+</span> b <span class="sc">*</span> attitude,</span>
+<span id="cb41-27"><a href="#cb41-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">age_group =</span> <span class="fu">paste0</span>(<span class="st">"Age = "</span>, age)</span>
+<span id="cb41-28"><a href="#cb41-28" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb41-29"><a href="#cb41-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-30"><a href="#cb41-30" aria-hidden="true" tabindex="-1"></a><span class="co"># 시각화</span></span>
+<span id="cb41-31"><a href="#cb41-31" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(plot_data, <span class="fu">aes</span>(<span class="at">x =</span> ad_exposr, <span class="at">y =</span> purchase_amount, <span class="at">color =</span> age_group)) <span class="sc">+</span></span>
+<span id="cb41-32"><a href="#cb41-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">size =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb41-33"><a href="#cb41-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb41-34"><a href="#cb41-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"조절된 매개효과: 광고효과의 매출에 대한 영향"</span>,</span>
+<span id="cb41-35"><a href="#cb41-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"나이에 따른 광고효과의 차이"</span>,</span>
+<span id="cb41-36"><a href="#cb41-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Ad Exposure"</span>,</span>
+<span id="cb41-37"><a href="#cb41-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Predicted Purchase Amount"</span>,</span>
+<span id="cb41-38"><a href="#cb41-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"Age Group"</span></span>
+<span id="cb41-39"><a href="#cb41-39" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb41-40"><a href="#cb41-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">14</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Chapter7_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>광고 노출(Ad Exposure)</strong>이 <strong>구매금액(Purchase Amount)</strong>에 미치는 효과는, 먼저 <strong>고객 태도(Attitude)</strong>를 매개로 전달된다.</p>
+<p>하지만 그 과정에서 <strong>연령(Age)</strong>이 조절변수로 작동하여, 광고 노출이 태도에 주는 영향이 연령에 따라 달라진다.</p>
+<p>그래프에서 보듯, 연령이 낮은 집단(20세)은 광고에 더 민감하게 반응하며, 구매금액도 더 급격히 증가한다.</p>
+<p>반면, 연령이 높은 집단(40세)은 광고 노출이 높아져도 태도 변화가 크지 않아 결과적으로 구매금액 변화 폭도 작다. 심지어 연령이 60대 정도에 이르면 광고 노출이 높아질 수록 구매금액이 줄어드는 경향이 확인된다.</p>
+<p>이는 실무적으로도 매우 중요한 의미를 지닌다. 광고의 효과는 단순히 노출 횟수만으로 설명되지 않으며, 고객 특성에 따라 그 효과가 조절될 수 있다는 점을 시사한다.</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      return note.innerHTML;
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./Chapter6.html" class="pagination-link  aria-label=" &lt;span="" 통계의="" 꽃&lt;="" span&gt;"="">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">회귀분석: 통계의 꽃</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./Chapter8.html" class="pagination-link" aria-label="<span class='chapter-number'>8</span>&nbsp; <span class='chapter-title'>차원축소와 주성분 분석</span>">
+        <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">차원축소와 주성분 분석</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
